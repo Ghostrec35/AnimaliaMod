@@ -27,18 +27,17 @@ public class BlockExtractor extends BlockContainer
 
 	private static boolean keepInventory = false;
 
-	// Make sure you Annotate these as Client Side Only
-	@SideOnly(Side.CLIENT)
-	private Icon extractorTopIcon;
-	@SideOnly(Side.CLIENT)
-	private Icon extractorFrontIcon;
+        public static int modelID = 0; 
 
 	public BlockExtractor(int blockID, boolean b)
 	{
 		super(blockID, Material.rock);
 		this.isActive = b;
 	}
-
+        public boolean renderAsNormalBlock()
+        {
+            return false;
+        }
 	public static void updateExtractorBlockState(boolean b, World world, int xCoord, int yCoord, int zCoord)
 	{
 		int l = world.getBlockMetadata(xCoord, yCoord, zCoord);
@@ -121,9 +120,10 @@ public class BlockExtractor extends BlockContainer
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister iconRegister)
 	{
-		this.blockIcon = iconRegister.registerIcon("animalia:machines/extractor_dummy");
+                //this will only be used for particle generation
+		this.blockIcon = iconRegister.registerIcon("animalia:machines/extractor_particles");
 	}
-
+        
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9)
 	{
 		TileEntity te = world.getBlockTileEntity(x, y, z);
@@ -186,4 +186,12 @@ public class BlockExtractor extends BlockContainer
 	{
 		return Animalia.extractorOff.blockID;
 	}
+        
+        @SideOnly(Side.CLIENT)
+        @Override
+        public int getRenderType() {
+            return modelID; //To change body of generated methods, choose Tools | Templates.
+        }
+        
+        
 }

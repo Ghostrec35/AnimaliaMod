@@ -39,8 +39,8 @@ public class CommonProxy implements IGuiHandler
 	{
 
 	}
-
-	public static void registerTileEntities()
+        //One should not use static methods in a proxy.
+	public void registerTileEntities()
 	{
 		TileEntity.addMapping(TileEntityExtractor.class, "extractor");
 	}

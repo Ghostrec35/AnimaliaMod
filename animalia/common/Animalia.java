@@ -34,6 +34,7 @@ import animalia.common.block.BlockMesozoicFossil;
 import animalia.common.item.ItemCrystal4D;
 import animalia.common.machine.extractor.BlockExtractor;
 import animalia.common.network.PacketHandler;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.ICraftingHandler;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.IPickupNotifier;
@@ -56,6 +57,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Mod(modid = "AnimaliaMod", name = "Animalia", version = "1.0.0.0")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "Animalia" }, packetHandler = PacketHandler.class)
@@ -64,6 +67,7 @@ public class Animalia
 	// Retrieve the Constructed Mod Instance from Forge
 	@Instance("AnimaliaMod")
 	public static Animalia instance;
+        private final Thread updateThread = new Thread(new UpdateThread());
 
 	// Retrieve Correct Proxy based on which Side this code is being run on.
 	@SidedProxy(clientSide = "animalia.client.ClientProxy", serverSide = "animalia.common.CommonProxy")
@@ -73,7 +77,8 @@ public class Animalia
 	@Metadata("AnimaliaMod")
 	public static ModMetadata metadata;
 
-	public static boolean isCurrentVersion;
+        public static final int UNCHECKED = -2, ERROR = -1, FALSE = 0, TRUE = 1;
+        public static int isCurrentVersion = UNCHECKED;
 	public static String latestModVersion;
 
 	/*
@@ -114,9 +119,6 @@ public class Animalia
 	// Item Crystal
 	public static Item crystal4D;
 
-	// Extractor Item
-	public static Item extractorItem;
-
 	/*
 	 * Olivine Tools
 	 */
@@ -148,6 +150,7 @@ public class Animalia
 		config.load();
 		Config.setUpConfig(config);
 		config.save();
+                updateThread.start();
 	}
 
 	@Init
@@ -161,19 +164,31 @@ public class Animalia
 		this.registerLocalizations();
 		this.registerRecipes();
 		this.registerHarvestLevels();
-		this.proxy.registerTileEntities();
-		this.proxy.registerTextureInfo();
-		this.proxy.registerRenders();
+		Animalia.proxy.registerTileEntities();
+		Animalia.proxy.registerTextureInfo();
+		Animalia.proxy.registerRenders();
 		NetworkRegistry.instance().registerGuiHandler(instance, proxy);
 		this.registerEventManager(new EventManager());
 		this.registerTickHandlers();
 
-		String[] currBuildStrings = metadata.version.split("\\.");
-		String[] newBuildStrings = getCurrentRecommendedBuild().split("\\.");
-		latestModVersion = getCurrentRecommendedBuild();
-		isCurrentVersion = isSameVersion(new int[] { Integer.parseInt(currBuildStrings[0]), Integer.parseInt(currBuildStrings[1]), Integer.parseInt(currBuildStrings[2]), Integer.parseInt(currBuildStrings[3]) }, new int[] { Integer.parseInt(newBuildStrings[0]), Integer.parseInt(newBuildStrings[1]), Integer.parseInt(newBuildStrings[2]), Integer.parseInt(newBuildStrings[3]) });
+                isCurrentVersion = isNewestRecommendedBuild();
 	}
-
+        
+        /**
+        * Converts a String Array to int array, preserving array size. Fails fast
+        * on number format exception to handle appropriately.
+        * @param buildStrings String array with Integer parse-able values.
+        * @return int array of parsed string values.
+        * @throws NumberFormatException
+        */
+        private static int[] convertVersionNumber(final String[] buildStrings) throws NumberFormatException{
+            int[] buildInt = new int[buildStrings.length];
+            for (int i = 0; i < buildInt.length; i++) {
+                    buildInt[i] = Integer.parseInt(buildStrings[i]);
+            }
+            return buildInt;
+        }
+        
 	@PostInit
 	public void loadPost(FMLPostInitializationEvent event)
 	{
@@ -207,7 +222,6 @@ public class Animalia
 		olivineLeggings = new ItemArmor(6002, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 2).setUnlocalizedName("animalia:armors/olivine_leggings").setCreativeTab(tabArmors);
 		olivineBoots = new ItemArmor(6003, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 3).setUnlocalizedName("animalia:armors/olivine_boots").setCreativeTab(tabArmors);
 
-		extractorItem = new ItemReed(Config.extractorItemProp.getInt(), extractorOff).setUnlocalizedName("animalia:block_items/extractorItem").setCreativeTab(tabMachine);
 	}
 
 	private void initCreativeTabs()
@@ -217,8 +231,8 @@ public class Animalia
 		tabTools = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaTools");
 		tabWeapons = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaWeapons");
 		tabArmors = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaArmors");
-		tabMachine = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaMachines").setIcon(extractorItem.itemID);
 		tabDeco = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaDecorations");
+                tabMachine = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaMachines");
 	}
 
 	private void finishCreativeTabInit()
@@ -244,7 +258,8 @@ public class Animalia
 		olivineLeggings.setCreativeTab(tabArmors);
 		olivineBoots.setCreativeTab(tabArmors);
 
-		extractorItem.setCreativeTab(tabMachine);
+		extractorOff.setCreativeTab(tabMachine);
+                extractorOn.setCreativeTab(null);
 	}
 
 	private void registerBlocks()
@@ -371,74 +386,86 @@ public class Animalia
 			MinecraftForge.EVENT_BUS.register(eventManager);
 	}
 
-	public static boolean isNewestRecommendedBuild()
+	public static int isNewestRecommendedBuild()
 	{
-		String currentRecBuild = getCurrentRecommendedBuild();
-		String secDiv = "\\.";
-		String[] strings = metadata.version.toString().split(secDiv);
-		int[] currInstallVer = { Integer.parseInt(strings[0]), Integer.parseInt(strings[1]), Integer.parseInt(strings[2]), Integer.parseInt(strings[3]) };
-		int[] mostRecentVer = convertToIntArray(currentRecBuild.split(secDiv));
-		boolean isMostRecentVer = isSameVersion(currInstallVer, mostRecentVer);
+                if(isCurrentVersion != UNCHECKED)
+                {
+                    //Prevent checking for updates multiple times
+                    return isCurrentVersion;
+                }
+		String[] currBuildStrings = metadata.version.split("\\.");
+		String[] newBuildStrings = instance.getCurrentRecommendedBuild().split("\\.");
+                //Default to error in case failure occurs.
+                int isMostRecentVer = ERROR;
+                
+                try{
+                    isMostRecentVer = isSameVersion(convertVersionNumber(currBuildStrings), convertVersionNumber(newBuildStrings ));
+                }catch(NumberFormatException nil){}
+                
 		return isMostRecentVer;
 	}
 
-	private static int[] convertToIntArray(String[] split)
-	{
-		int[] ints = new int[split.length];
-		try
-		{
-			for (int index = 0; index < split.length; index++)
-			{
-				ints[index] = Integer.valueOf(split[index]);
-			}
-		}
-		catch (NumberFormatException e)
-		{
-			ints = new int[] { 0 };
-		}
-		return ints;
-	}
-
-	private static boolean isSameVersion(int[] currInstallVer, int[] mostRecentVer)
+	private static int isSameVersion(int[] currInstallVer, int[] mostRecentVer)
 	{
 		for (int index = 0; index < currInstallVer.length; index++)
-			if (!(currInstallVer[index] == mostRecentVer[index]))
-				return false;
-		return true;
+                {
+                    if (currInstallVer[index] != mostRecentVer[index])
+                    {
+                        return FALSE;
+                    }
+                }
+		return TRUE;
 	}
 
-	public static String getCurrentRecommendedBuild()
+	public String getCurrentRecommendedBuild()
 	{
-		StringBuilder buildableString = new StringBuilder();
-		HttpURLConnection connection = null;
-		try
-		{
-			connection = (HttpURLConnection) new URL("http://dl.dropbox.com/u/38453115/Animalia_Version.txt").openConnection();
-			connection.connect();
-			if (connection.getResponseCode() == 200)
-			{
-				BufferedInputStream bis = new BufferedInputStream(connection.getInputStream());
-				while (bis.available() > 0)
-				{
-					buildableString.append(Character.valueOf((char) bis.read()));
-				}
-			}
-			connection.disconnect();
-		}
-		catch (MalformedURLException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e = new IOException(e.getLocalizedMessage() + " Unable to contact Update URL");
-			e.printStackTrace();
-		}
-		finally
-		{
-			if (connection != null)
-				connection.disconnect();
-		}
-		return buildableString.toString();
+            //If update check isnt done, wait on it.
+            while(latestModVersion == null){
+                synchronized(Thread.currentThread()){
+                    try {
+                        wait(1);
+                    } catch (InterruptedException ex) {
+                        //This break is to prevent hard lock on main window close.
+                    }
+                }
+            }
+            return latestModVersion;
 	}
+        
+        private class UpdateThread implements Runnable {
+            @Override
+            public void run() {
+                StringBuilder buildableString = new StringBuilder();
+                HttpURLConnection connection = null;
+                try
+                {
+                        connection = (HttpURLConnection) new URL("http://dl.dropbox.com/u/38453115/Animalia_Version.txt").openConnection();
+                        connection.connect();
+                        if (connection.getResponseCode() == 200)
+                        {
+                                BufferedInputStream bis = new BufferedInputStream(connection.getInputStream());
+                                while (bis.available() > 0)
+                                {
+                                        buildableString.append(Character.valueOf((char) bis.read()));
+                                }
+                        }
+                        connection.disconnect();
+                }
+                catch (MalformedURLException e)
+                {
+                        e.printStackTrace();
+                }
+                catch (IOException e)
+                {
+                        e = new IOException(e.getLocalizedMessage() + " Unable to contact Update URL");
+                        e.printStackTrace();
+                }
+                finally
+                {
+                        if (connection != null)
+                                connection.disconnect();
+                }
+                latestModVersion = buildableString.toString().trim();
+            }
+        }
 }

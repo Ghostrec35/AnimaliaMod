@@ -45,9 +45,12 @@ public class TileEntityExtractorRenderer extends TileEntitySpecialRenderer {
         
         GL11.glPushMatrix();
         
-        GL11.glTranslatef((float) d + 0.5F, (float) d1 + 1.15F, (float) d2 + 0.5F);
+        //To change block position
+        GL11.glTranslatef((float) d + 0.5F, (float) d1 + 1.05F, (float) d2 + 0.5F);
+        //To change block rotation
         GL11.glRotatef(rotation, 0.0F, 1.0F, 0.0F);
-        GL11.glScalef(0.830F, -0.75F, -0.830F);
+        //To change block size
+        GL11.glScalef(0.830F, -0.70F, -0.830F);
         
         model.renderAll(0.0625F);
         

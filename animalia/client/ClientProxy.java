@@ -6,12 +6,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import animalia.client.gui.GuiExtractor;
+import animalia.client.renders.BlockExtractorInventoryRender;
 import animalia.client.renders.TileEntityExtractorRenderer;
 import animalia.common.Animalia;
 import animalia.common.CommonProxy;
 import animalia.common.Constants;
+import animalia.common.machine.extractor.BlockExtractor;
 import animalia.common.machine.extractor.TileEntityExtractor;
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy
 {
@@ -40,18 +43,22 @@ public class ClientProxy extends CommonProxy
 	public void registerRenders() 
 	{
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityExtractor.class, new TileEntityExtractorRenderer());
+                BlockExtractor.modelID = RenderingRegistry.getNextAvailableRenderId();
+                RenderingRegistry.registerBlockHandler(BlockExtractor.modelID, new BlockExtractorInventoryRender());
+                
 	}
 	
 	public void registerTextureInfo() 
 	{
-		File file = new File("test.txt");
-		System.out.println(file.getAbsolutePath());
-		File file1 = new File("mods/animalia/textures/machines/extractor.png");
-		System.out.println("File Exists: " + file1.exists());
+//		File file = new File("test.txt");
+//		System.out.println(file.getAbsolutePath());
+//		File file1 = new File("mods/animalia/textures/machines/extractor.png");
+//		System.out.println("File Exists: " + file1.exists());
 	}
 	
-	public static void registerTileEntities()
+	public void registerTileEntities()
 	{
-		ClientRegistry.registerTileEntity(TileEntityExtractor.class, "extractor", new TileEntityExtractorRenderer());
+            //Needed a more unique name
+		ClientRegistry.registerTileEntity(TileEntityExtractor.class, "AnimaliaExtractor", new TileEntityExtractorRenderer());
 	}
 }

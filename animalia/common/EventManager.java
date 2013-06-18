@@ -37,10 +37,23 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
 	@Override
 	public void onPlayerLogin(EntityPlayer player) 
 	{
-		if(Animalia.isCurrentVersion)
-			player.addChatMessage(TextColor.GOLD.getColorString() + "You have the most current version of the Animalia mod installed");
-		else
-			player.addChatMessage(TextColor.RED.getColorString() + "You do not have the most recent recommended build of Animalia installed. The most recent version is: " + Animalia.latestModVersion + "; however, your current version is: " + Animalia.metadata.version);
+            switch(Animalia.isCurrentVersion){
+                case Animalia.TRUE:
+                    player.addChatMessage(TextColor.GOLD.getColorString() + "You have the most current version of the Animalia mod installed");
+                    break;
+                case Animalia.FALSE:
+                    player.addChatMessage(TextColor.RED.getColorString() + "You do not have the most recent recommended build of Animalia installed. The most recent version is: " + Animalia.latestModVersion + "; however, your current version is: " + Animalia.metadata.version);
+                    break;
+                case Animalia.ERROR:
+                    player.addChatMessage(TextColor.DARKRED.getColorString() + animalia.common.Text.TextFormat.ITALICS + "Animalia mod was unable to check for updates.");
+                    break;
+                case Animalia.UNCHECKED:
+                    //Never checked
+                    break;
+                default:
+                    //wut...
+                    break;
+            }
 	}
 
 	@Override
