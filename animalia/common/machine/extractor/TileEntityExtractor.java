@@ -15,6 +15,8 @@ import animalia.common.network.PacketHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet132TileEntityData;
 
 public class TileEntityExtractor extends TileEntity implements ISidedInventory, IHandlePacket
 {
@@ -113,7 +115,7 @@ public class TileEntityExtractor extends TileEntity implements ISidedInventory, 
 	@Override
 	public String getInvName()
 	{
-		return this.isInvNameLocalized() ? this.customString : "container.furnace";
+		return "animalia.container.extractor";
 	}
 
 	@Override
@@ -181,6 +183,18 @@ public class TileEntityExtractor extends TileEntity implements ISidedInventory, 
 		}
 	}
 
+        @Override
+        public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {
+            readFromNBT(pkt.customParam1);
+        }
+
+        @Override
+        public Packet getDescriptionPacket() {
+            NBTTagCompound nbt = new NBTTagCompound();
+            writeToNBT(nbt);
+            return new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, nbt);
+        }
+        
 	public static int getItemRunTime(ItemStack itemstack)
 	{
 		if (!(itemstack == null))
@@ -280,9 +294,14 @@ public class TileEntityExtractor extends TileEntity implements ISidedInventory, 
 	public void handlePacketData(INetworkManager manager, Packet250CustomPayload packet, EntityPlayer player)
 	{
 		ByteArrayDataInput bads = ByteStreams.newDataInput(packet.data);
-
-		this.currentItemRunTime = bads.readInt();
-		this.extractorRunTime = bads.readInt();
+                if(PacketHandler.PacketType.TILEENTITY.ordinal() == bads.readInt() 
+                        && xCoord == bads.readInt() && yCoord == bads.readInt() 
+                        && zCoord == bads.readInt())
+                {
+                        this.currentItemRunTime = bads.readInt();
+                        this.extractorRunTime = bads.readInt();
+                    
+                }
 	}
 
 	@Override

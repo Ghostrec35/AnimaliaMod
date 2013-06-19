@@ -109,6 +109,6 @@ public class PacketHandler implements IPacketHandler
 		packet.channel = channel;
 		packet.data = baos.toByteArray();
 		packet.length = packet.data.length;
-		PacketDispatcher.sendPacketToServer(packet);
+		PacketDispatcher.sendPacketToAllAround(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 30, tileEntity.worldObj.getWorldInfo().getDimension(), packet);
 	}
 }

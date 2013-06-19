@@ -18,7 +18,6 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemPickaxe;
-import net.minecraft.item.ItemReed;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -34,7 +33,6 @@ import animalia.common.block.BlockMesozoicFossil;
 import animalia.common.item.ItemCrystal4D;
 import animalia.common.machine.extractor.BlockExtractor;
 import animalia.common.network.PacketHandler;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.ICraftingHandler;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.IPickupNotifier;
@@ -57,8 +55,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Mod(modid = "AnimaliaMod", name = "Animalia", version = "1.0.0.0")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "Animalia" }, packetHandler = PacketHandler.class)
@@ -232,7 +228,7 @@ public class Animalia
 		tabWeapons = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaWeapons");
 		tabArmors = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaArmors");
 		tabDeco = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaDecorations");
-                tabMachine = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaMachines");
+                tabMachine = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaMachines").setIcon(extractorOff.blockID);
 	}
 
 	private void finishCreativeTabInit()
@@ -341,7 +337,8 @@ public class Animalia
 		LanguageRegistry.instance().addStringLocalization("itemGroup.animaliaArmors", Language.ENGLISHUS.getLangCode(), "Animalia Armors");
 		LanguageRegistry.instance().addStringLocalization("itemGroup.animaliaMachines", Language.ENGLISHUS.getLangCode(), "Animalia Machines");
 		LanguageRegistry.instance().addStringLocalization("itemGroup.animaliaDecorations", Language.ENGLISHUS.getLangCode(), "Animalia Decorations");
-	}
+                LanguageRegistry.instance().addStringLocalization("animalia.container.extractor", Language.ENGLISHUS.getLangCode(), "Extractor");
+        }
 
 	private void registerRecipes()
 	{
@@ -424,7 +421,7 @@ public class Animalia
                 synchronized(Thread.currentThread()){
                     try {
                         wait(1);
-                    } catch (InterruptedException ex) {
+                    } catch (Exception ex) {
                         //This break is to prevent hard lock on main window close.
                     }
                 }

@@ -48,4 +48,5 @@ public class GuiExtractor extends GuiContainer
         i1 = this.extractorInventory.getProgressScaled(24);
         this.drawTexturedModalRect(k + 79, l + 34, 176, 14, i1 + 1, 16);
     }
+    
 }
