@@ -16,7 +16,7 @@ import net.minecraft.world.IBlockAccess;
  * @author Home
  */
 public class BlockExtractorInventoryRender implements ISimpleBlockRenderingHandler{
-    private static TileEntityExtractorRenderer teRenderer = new TileEntityExtractorRenderer();
+    private static RenderExtractor teRenderer = new RenderExtractor();
     private static TileEntityExtractor dummyExtractor = new TileEntityExtractor();
     
     @Override

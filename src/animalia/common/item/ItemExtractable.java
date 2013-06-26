@@ -15,7 +15,7 @@ public class ItemExtractable extends Item implements IExtractable
 	}
 
 	@Override
-	public ItemStack[] getExtractionPossiblities() 
+	public ItemStack[] getExtractionPossiblities(int meta) 
 	{
 		return extractableItems;
 	}

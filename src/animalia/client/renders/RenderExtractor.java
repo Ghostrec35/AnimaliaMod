@@ -14,11 +14,11 @@ import animalia.common.machine.extractor.TileEntityExtractor;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
 
-public class TileEntityExtractorRenderer extends TileEntitySpecialRenderer {
+public class RenderExtractor extends TileEntitySpecialRenderer {
 
     ModelExtractor model;
 
-    public TileEntityExtractorRenderer() {
+    public RenderExtractor() {
         model = new ModelExtractor();
     }
 

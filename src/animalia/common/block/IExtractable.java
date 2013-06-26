@@ -4,5 +4,5 @@ import net.minecraft.item.ItemStack;
 
 public interface IExtractable
 {
-	public ItemStack[] getExtractionPossiblities();
+	public ItemStack[] getExtractionPossiblities(int meta);
 }

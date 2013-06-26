@@ -15,7 +15,7 @@ public class BlockExtractable extends Block implements IExtractable
 	}
 
 	@Override
-	public ItemStack[] getExtractionPossiblities() 
+	public ItemStack[] getExtractionPossiblities(int meta) 
 	{
 		return extractableItems;
 	}

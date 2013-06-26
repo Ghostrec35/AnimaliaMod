@@ -63,7 +63,7 @@ public class Animalia
 	// Retrieve the Constructed Mod Instance from Forge
 	@Instance("AnimaliaMod")
 	public static Animalia instance;
-        private final Thread updateThread = new Thread(new UpdateThread());
+	private final Thread updateThread = new Thread(new UpdateThread());
 
 	// Retrieve Correct Proxy based on which Side this code is being run on.
 	@SidedProxy(clientSide = "animalia.client.ClientProxy", serverSide = "animalia.common.CommonProxy")
@@ -73,8 +73,8 @@ public class Animalia
 	@Metadata("AnimaliaMod")
 	public static ModMetadata metadata;
 
-        public static final int UNCHECKED = -2, ERROR = -1, FALSE = 0, TRUE = 1;
-        public static int isCurrentVersion = UNCHECKED;
+	public static final int UNCHECKED = -2, ERROR = -1, FALSE = 0, TRUE = 1;
+	public static int isCurrentVersion = UNCHECKED;
 	public static String latestModVersion;
 
 	/*
@@ -82,13 +82,13 @@ public class Animalia
 	 * your generic blocks. Only use custom tabs for unique mod only content... Tool can be added to
 	 * Vanilla too tab if there the same as normal tools
 	 */
-	public static AnimaliaCreativeTabs tabBlock;
-	public static AnimaliaCreativeTabs tabMaterial;
-	public static AnimaliaCreativeTabs tabTools;
-	public static AnimaliaCreativeTabs tabWeapons;
-	public static AnimaliaCreativeTabs tabArmors;
-	public static AnimaliaCreativeTabs tabMachine;
-	public static AnimaliaCreativeTabs tabDeco;
+	public static CreativeTabAnimalia tabBlock;
+	public static CreativeTabAnimalia tabMaterial;
+	public static CreativeTabAnimalia tabTools;
+	public static CreativeTabAnimalia tabWeapons;
+	public static CreativeTabAnimalia tabArmors;
+	public static CreativeTabAnimalia tabMachine;
+	public static CreativeTabAnimalia tabDeco;
 
 	/*
 	 * EnumToolMaterial Values
@@ -146,7 +146,7 @@ public class Animalia
 		config.load();
 		Config.setUpConfig(config);
 		config.save();
-                updateThread.start();
+		updateThread.start();
 	}
 
 	@Init
@@ -167,24 +167,25 @@ public class Animalia
 		this.registerEventManager(new EventManager());
 		this.registerTickHandlers();
 
-                isCurrentVersion = isNewestRecommendedBuild();
+		isCurrentVersion = isNewestRecommendedBuild();
 	}
-        
-        /**
-        * Converts a String Array to int array, preserving array size. Fails fast
-        * on number format exception to handle appropriately.
-        * @param buildStrings String array with Integer parse-able values.
-        * @return int array of parsed string values.
-        * @throws NumberFormatException
-        */
-        private static int[] convertVersionNumber(final String[] buildStrings) throws NumberFormatException{
-            int[] buildInt = new int[buildStrings.length];
-            for (int i = 0; i < buildInt.length; i++) {
-                    buildInt[i] = Integer.parseInt(buildStrings[i]);
-            }
-            return buildInt;
-        }
-        
+
+	/** Converts a String Array to int array, preserving array size. Fails fast on number format
+	 * exception to handle appropriately.
+	 * 
+	 * @param buildStrings String array with Integer parse-able values.
+	 * @return int array of parsed string values.
+	 * @throws NumberFormatException */
+	private static int[] convertVersionNumber(final String[] buildStrings) throws NumberFormatException
+	{
+		int[] buildInt = new int[buildStrings.length];
+		for (int i = 0; i < buildInt.length; i++)
+		{
+			buildInt[i] = Integer.parseInt(buildStrings[i]);
+		}
+		return buildInt;
+	}
+
 	@PostInit
 	public void loadPost(FMLPostInitializationEvent event)
 	{
@@ -222,13 +223,13 @@ public class Animalia
 
 	private void initCreativeTabs()
 	{
-		tabBlock = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaBlocks").setIcon(fossilEP.blockID);
-		tabMaterial = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaMaterials");
-		tabTools = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaTools");
-		tabWeapons = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaWeapons");
-		tabArmors = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaArmors");
-		tabDeco = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaDecorations");
-                tabMachine = new AnimaliaCreativeTabs(CreativeTabs.getNextID(), "animaliaMachines").setIcon(extractorOff.blockID);
+		tabBlock = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaBlocks").setIcon(fossilEP.blockID);
+		tabMaterial = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaMaterials");
+		tabTools = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaTools");
+		tabWeapons = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaWeapons");
+		tabArmors = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaArmors");
+		tabDeco = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaDecorations");
+		tabMachine = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaMachines").setIcon(extractorOff.blockID);
 	}
 
 	private void finishCreativeTabInit()
@@ -255,7 +256,7 @@ public class Animalia
 		olivineBoots.setCreativeTab(tabArmors);
 
 		extractorOff.setCreativeTab(tabMachine);
-                extractorOn.setCreativeTab(null);
+		extractorOn.setCreativeTab(null);
 	}
 
 	private void registerBlocks()
@@ -337,8 +338,8 @@ public class Animalia
 		LanguageRegistry.instance().addStringLocalization("itemGroup.animaliaArmors", Language.ENGLISHUS.getLangCode(), "Animalia Armors");
 		LanguageRegistry.instance().addStringLocalization("itemGroup.animaliaMachines", Language.ENGLISHUS.getLangCode(), "Animalia Machines");
 		LanguageRegistry.instance().addStringLocalization("itemGroup.animaliaDecorations", Language.ENGLISHUS.getLangCode(), "Animalia Decorations");
-                LanguageRegistry.instance().addStringLocalization("animalia.container.extractor", Language.ENGLISHUS.getLangCode(), "Extractor");
-        }
+		LanguageRegistry.instance().addStringLocalization("animalia.container.extractor", Language.ENGLISHUS.getLangCode(), "Extractor");
+	}
 
 	private void registerRecipes()
 	{
@@ -385,84 +386,95 @@ public class Animalia
 
 	public static int isNewestRecommendedBuild()
 	{
-                if(isCurrentVersion != UNCHECKED)
-                {
-                    //Prevent checking for updates multiple times
-                    return isCurrentVersion;
-                }
+		if (isCurrentVersion != UNCHECKED)
+		{
+			//Prevent checking for updates multiple times
+			return isCurrentVersion;
+		}
 		String[] currBuildStrings = metadata.version.split("\\.");
 		String[] newBuildStrings = instance.getCurrentRecommendedBuild().split("\\.");
-                //Default to error in case failure occurs.
-                int isMostRecentVer = ERROR;
-                
-                try{
-                    isMostRecentVer = isSameVersion(convertVersionNumber(currBuildStrings), convertVersionNumber(newBuildStrings ));
-                }catch(NumberFormatException nil){}
-                
+		//Default to error in case failure occurs.
+		int isMostRecentVer = ERROR;
+
+		try
+		{
+			isMostRecentVer = isSameVersion(convertVersionNumber(currBuildStrings), convertVersionNumber(newBuildStrings));
+		}
+		catch (NumberFormatException nil)
+		{
+		}
+
 		return isMostRecentVer;
 	}
 
 	private static int isSameVersion(int[] currInstallVer, int[] mostRecentVer)
 	{
 		for (int index = 0; index < currInstallVer.length; index++)
-                {
-                    if (currInstallVer[index] != mostRecentVer[index])
-                    {
-                        return FALSE;
-                    }
-                }
+		{
+			if (currInstallVer[index] != mostRecentVer[index])
+			{
+				return FALSE;
+			}
+		}
 		return TRUE;
 	}
 
 	public String getCurrentRecommendedBuild()
 	{
-            //If update check isnt done, wait on it.
-            while(latestModVersion == null){
-                synchronized(Thread.currentThread()){
-                    try {
-                        wait(1);
-                    } catch (Exception ex) {
-                        //This break is to prevent hard lock on main window close.
-                    }
-                }
-            }
-            return latestModVersion;
+		//If update check isnt done, wait on it.
+		while (latestModVersion == null)
+		{
+			synchronized (Thread.currentThread())
+			{
+				try
+				{
+					wait(1);
+				}
+				catch (Exception ex)
+				{
+					//This break is to prevent hard lock on main window close.
+				}
+			}
+		}
+		return latestModVersion;
 	}
-        
-        private class UpdateThread implements Runnable {
-            @Override
-            public void run() {
-                StringBuilder buildableString = new StringBuilder();
-                HttpURLConnection connection = null;
-                try
-                {
-                        connection = (HttpURLConnection) new URL("http://dl.dropbox.com/u/38453115/Animalia_Version.txt").openConnection();
-                        connection.connect();
-                        if (connection.getResponseCode() == 200)
-                        {
-                                BufferedInputStream bis = new BufferedInputStream(connection.getInputStream());
-                                while (bis.available() > 0)
-                                {
-                                        buildableString.append(Character.valueOf((char) bis.read()));
-                                }
-                        }
-                        connection.disconnect();
-                }
-                catch (MalformedURLException e)
-                {
-                        e.printStackTrace();
-                }
-                catch (IOException e)
-                {
-                        e = new IOException(e.getLocalizedMessage() + " Unable to contact Update URL");
-                        e.printStackTrace();
-                }
-                finally
-                {
-                        if (connection != null)
-                                connection.disconnect();
-                }
-                latestModVersion = buildableString.toString().trim();
-            }
-        }
+
+	private class UpdateThread implements Runnable
+	{
+		@Override
+		public void run()
+		{
+			StringBuilder buildableString = new StringBuilder();
+			HttpURLConnection connection = null;
+			try
+			{
+				connection = (HttpURLConnection) new URL("http://dl.dropbox.com/u/38453115/Animalia_Version.txt").openConnection();
+				connection.connect();
+				if (connection.getResponseCode() == 200)
+				{
+					BufferedInputStream bis = new BufferedInputStream(connection.getInputStream());
+					while (bis.available() > 0)
+					{
+						buildableString.append(Character.valueOf((char) bis.read()));
+					}
+				}
+				connection.disconnect();
+			}
+			catch (MalformedURLException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				e = new IOException(e.getLocalizedMessage() + " Unable to contact Update URL");
+				e.printStackTrace();
+			}
+			finally
+			{
+				if (connection != null)
+					connection.disconnect();
+			}
+			latestModVersion = buildableString.toString().trim();
+		}
+	}
 }

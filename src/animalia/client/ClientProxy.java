@@ -7,7 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import animalia.client.gui.GuiExtractor;
 import animalia.client.renders.BlockExtractorInventoryRender;
-import animalia.client.renders.TileEntityExtractorRenderer;
+import animalia.client.renders.RenderExtractor;
 import animalia.common.Animalia;
 import animalia.common.CommonProxy;
 import animalia.common.Constants;
@@ -42,7 +42,7 @@ public class ClientProxy extends CommonProxy
 
 	public void registerRenders() 
 	{
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityExtractor.class, new TileEntityExtractorRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityExtractor.class, new RenderExtractor());
                 BlockExtractor.modelID = RenderingRegistry.getNextAvailableRenderId();
                 RenderingRegistry.registerBlockHandler(BlockExtractor.modelID, new BlockExtractorInventoryRender());
                 
@@ -59,6 +59,6 @@ public class ClientProxy extends CommonProxy
 	public void registerTileEntities()
 	{
             //Needed a more unique name
-		ClientRegistry.registerTileEntity(TileEntityExtractor.class, "AnimaliaExtractor", new TileEntityExtractorRenderer());
+		ClientRegistry.registerTileEntity(TileEntityExtractor.class, "AnimaliaExtractor", new RenderExtractor());
 	}
 }

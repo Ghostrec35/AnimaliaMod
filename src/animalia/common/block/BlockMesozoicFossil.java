@@ -21,7 +21,7 @@ public class BlockMesozoicFossil extends Block implements IExtractable
 	}
 
 	@Override
-	public ItemStack[] getExtractionPossiblities()
+	public ItemStack[] getExtractionPossiblities(int meta)
 	{
 		return new ItemStack[] {
 
