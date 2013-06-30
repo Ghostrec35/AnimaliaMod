@@ -84,12 +84,12 @@ public final class Text
 	
 	public enum TextFormat
 	{
-		RANDOMCHARS("\247k"),
-		BOLD("\247l"),
-		STRIKE("\247m"),
-		UNDERLINE("\247n"),
-		ITALICS("\247o"),
-		RESETFORMAT("\247r");
+		RANDOMCHARS("§k"),
+		BOLD("§l"),
+		STRIKE("§m"),
+		UNDERLINE("§n"),
+		ITALICS("§o"),
+		RESETFORMAT("§r");
 		
 		private final String formatString;
 		
