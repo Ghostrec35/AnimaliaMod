@@ -104,6 +104,7 @@ public class Animalia
 	// EP is an Abbreviation for Early Paleozoic
 	public static Block fossilEP;
 	
+	//Ore Blocks
 	public static Block olivineBlock;
 
 	// LP is an Abbreviation for Late Paleozoic
@@ -215,7 +216,8 @@ public class Animalia
 
 		extractorOff = new BlockExtractor(ConfigSettings.extractorProp.getInt(), false).setHardness(1F).setResistance(100);
 		extractorOn = new BlockExtractor(ConfigSettings.extractorProp.getInt() + 1, true).setHardness(1F).setResistance(100).setLightValue(1.0F);
-		olivineBlock = new Block(ConfigSettings.olivineBlock.getInt() + 1, Material.iron).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:olivineBlock");
+		
+		olivineBlock = new Block(ConfigSettings.olivineBlock.getInt() + 1, Material.iron).setHardness(5.0F).setResistance(10.0F).setUnlocalizedName("animalia:olivineBlock").setStepSound(Block.soundMetalFootstep);
 
 		// Items
 		crystal4D = new ItemCrystal4D(ConfigSettings.crystalGemProp.getInt()).setUnlocalizedName("animalia:crystal");
@@ -255,6 +257,8 @@ public class Animalia
 		logLP.setCreativeTab(tabBlock);
 		saplingLP.setCreativeTab(tabDeco);
 		planksLP.setCreativeTab(tabBlock);
+		
+		olivineBlock.setCreativeTab(tabBlock);
 
 		crystal4DOre.setCreativeTab(tabBlock);
 
