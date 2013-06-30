@@ -35,6 +35,7 @@ import animalia.common.block.BlockLatePaleozoicLog;
 import animalia.common.block.BlockLatePaleozoicPlanks;
 import animalia.common.block.BlockLatePaleozoicSapling;
 import animalia.common.block.BlockMesozoicFossil;
+import animalia.common.block.ItemBlockMetadata;
 import animalia.common.config.ConfigHandler;
 import animalia.common.config.ConfigSettings;
 import animalia.common.item.ItemCrystal4D;
@@ -249,7 +250,7 @@ public class Animalia
 		
 		leavesLP.setCreativeTab(tabBlock);
 		logLP.setCreativeTab(tabBlock);
-		saplingLP.setCreativeTab(tabBlock);
+		saplingLP.setCreativeTab(tabDeco);
 		planksLP.setCreativeTab(tabBlock);
 
 		crystal4DOre.setCreativeTab(tabBlock);
@@ -301,7 +302,7 @@ public class Animalia
 	
 	private static void registerMetadataBlock(Block block, String name)
 	{
-		GameRegistry.registerBlock(block, ItemBlockWithMetadata.class, name, Reference.MOD_ID);
+		GameRegistry.registerBlock(block, ItemBlockMetadata.class, name, Reference.MOD_ID);
 	}
 
 	private void registerItems()
