@@ -67,7 +67,7 @@ public class ConfigHandler
         ConfigSettings.planksLPProp = config.get(config.CATEGORY_BLOCK, "Late Paleozoic Planks", 3053);
         ConfigSettings.planksLPProp.comment = "Late Paleozoic Planks Block ID";
 		
-		ConfigSettings.olivineBlock = config.get(config.CATEGORY_BLOCK, "Olivine Block", 3053);
+		ConfigSettings.olivineBlock = config.get(config.CATEGORY_BLOCK, "Olivine Block", 3054);
         ConfigSettings.olivineBlock.comment = "Olivine Block ID";
     }
 
