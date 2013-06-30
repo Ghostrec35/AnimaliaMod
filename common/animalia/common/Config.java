@@ -11,6 +11,10 @@ public class Config
 	public static Property fossilMesozoicProp;
 	public static Property crystalOreProp;
 	public static Property extractorProp;
+	public static Property logsLPProp;
+	public static Property leavesLPProp;
+	public static Property saplingLPProp;
+	public static Property planksLPProp;
 	
 	//Item Property
 	public static Property crystalGemProp;
@@ -39,6 +43,18 @@ public class Config
 		
 		extractorProp = config.get(config.CATEGORY_BLOCK, "Extractor Block", 4000);
 		extractorProp.comment = "Extractor Block ID. The On version of this block takes this ID plus one, so be wary of this.";
+		
+		logsLPProp = config.get(config.CATEGORY_BLOCK, "Late Paleozoic Logs", 3050);
+		logsLPProp.comment = "Late Paleozoic Logs Block ID";
+		
+		leavesLPProp = config.get(config.CATEGORY_BLOCK, "Late Paleozoic Leaves", 3051);
+		leavesLPProp.comment = "Late Paleozoic Leaves Block ID";
+		
+		saplingLPProp = config.get(config.CATEGORY_BLOCK, "Late Paleozoic Sapling", 3052);
+		saplingLPProp.comment = "Late Paleozoic Sapling Block ID";
+		
+		planksLPProp = config.get(config.CATEGORY_BLOCK, "Late Paleozoic Planks", 3053);
+		planksLPProp.comment = "Late Paleozoic Planks Block ID";
 	}
 
 	private static void addItemEntries(Configuration config) 

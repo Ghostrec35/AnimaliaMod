@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBlockWithMetadata;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemSpade;
@@ -29,10 +30,15 @@ import animalia.client.ClientTickHandler;
 import animalia.common.block.Block4DCrystalOre;
 import animalia.common.block.BlockEarlyPaleozoicFossil;
 import animalia.common.block.BlockLatePaleozoicFossil;
+import animalia.common.block.BlockLatePaleozoicLeaves;
+import animalia.common.block.BlockLatePaleozoicLog;
+import animalia.common.block.BlockLatePaleozoicPlanks;
+import animalia.common.block.BlockLatePaleozoicSapling;
 import animalia.common.block.BlockMesozoicFossil;
 import animalia.common.item.ItemCrystal4D;
 import animalia.common.machine.extractor.BlockExtractor;
 import animalia.common.network.PacketHandler;
+import animalia.common.ref.Reference;
 import cpw.mods.fml.common.ICraftingHandler;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.IPickupNotifier;
@@ -56,13 +62,14 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "AnimaliaMod", name = "Animalia", version = "1.0.0.0")
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "Animalia" }, packetHandler = PacketHandler.class)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { Reference.MAIN_CHANNEL }, packetHandler = PacketHandler.class)
 public class Animalia
 {
 	// Retrieve the Constructed Mod Instance from Forge
 	@Instance("AnimaliaMod")
 	public static Animalia instance;
+	
 	private final Thread updateThread = new Thread(new UpdateThread());
 
 	// Retrieve Correct Proxy based on which Side this code is being run on.
@@ -77,11 +84,6 @@ public class Animalia
 	public static int isCurrentVersion = UNCHECKED;
 	public static String latestModVersion;
 
-	/*
-	 * Creative Tabs TODO think about not having several tab but instead use the current ones for
-	 * your generic blocks. Only use custom tabs for unique mod only content... Tool can be added to
-	 * Vanilla too tab if there the same as normal tools
-	 */
 	public static CreativeTabAnimalia tabBlock;
 	public static CreativeTabAnimalia tabMaterial;
 	public static CreativeTabAnimalia tabTools;
@@ -105,6 +107,10 @@ public class Animalia
 
 	// LP is an Abbreviation for Late Paleozoic
 	public static Block fossilLP;
+	public static Block leavesLP;
+	public static Block logLP;
+	public static Block saplingLP;
+	public static Block planksLP;
 
 	public static Block fossilMesozoic;
 
@@ -194,6 +200,11 @@ public class Animalia
 
 	private void initObjects()
 	{
+		leavesLP = new BlockLatePaleozoicLeaves(Config.leavesLPProp.getInt()).setHardness(0.2F).setLightOpacity(1).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("animalia:leaves_late_paleo");
+		logLP = new BlockLatePaleozoicLog(Config.logsLPProp.getInt()).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:logs_late_paleo");
+		saplingLP = new BlockLatePaleozoicSapling(Config.saplingLPProp.getInt()).setHardness(0.0F).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("animalia:sapling_late_paleo");
+		planksLP = new BlockLatePaleozoicPlanks(Config.planksLPProp.getInt()).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:planks_late_paleo");
+		
 		fossilEP = new BlockEarlyPaleozoicFossil(Config.fossilEPProp.getInt(), Material.rock, "epFossil").setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_early_paleo");
 		fossilLP = new BlockLatePaleozoicFossil(Config.fossilLPProp.getInt(), Material.rock, "lpFossil").setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_late_paleo");
 		fossilMesozoic = new BlockMesozoicFossil(Config.fossilMesozoicProp.getInt(), Material.rock, "mesFossil").setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_meso");
@@ -237,6 +248,11 @@ public class Animalia
 		fossilEP.setCreativeTab(tabBlock);
 		fossilLP.setCreativeTab(tabBlock);
 		fossilMesozoic.setCreativeTab(tabBlock);
+		
+		leavesLP.setCreativeTab(tabBlock);
+		logLP.setCreativeTab(tabBlock);
+		saplingLP.setCreativeTab(tabBlock);
+		planksLP.setCreativeTab(tabBlock);
 
 		crystal4DOre.setCreativeTab(tabBlock);
 
@@ -265,6 +281,12 @@ public class Animalia
 		this.registerBlock(fossilEP, "FossilEP");
 		this.registerBlock(fossilLP, "FossilLP");
 		this.registerBlock(fossilMesozoic, "FossilMesozoic");
+		
+		//tree blocks
+		this.registerMetadataBlock(logLP, "LogLP");
+		this.registerMetadataBlock(leavesLP, "LeavesLP");
+		this.registerMetadataBlock(saplingLP, "SaplingLP");
+		this.registerMetadataBlock(planksLP, "PlanksLP");
 
 		// Crystal Ore Blocks
 		this.registerBlock(crystal4DOre, "CrystalOre");
@@ -277,6 +299,11 @@ public class Animalia
 	private static void registerBlock(Block block, String name)
 	{
 		GameRegistry.registerBlock(block, ItemBlock.class, name, metadata.modId);
+	}
+	
+	private static void registerMetadataBlock(Block block, String name)
+	{
+		GameRegistry.registerBlock(block, ItemBlockWithMetadata.class, name, metadata.modId);
 	}
 
 	private void registerItems()
@@ -314,6 +341,22 @@ public class Animalia
 		LanguageRegistry.addName(crystal4DOre, "4D Crystal Ore");
 
 		LanguageRegistry.addName(extractorOff, "Extractor");
+		
+		LanguageRegistry.addName(new ItemStack(logLP, 1, 0), "Sigillaria Log");
+		LanguageRegistry.addName(new ItemStack(logLP, 1, 3), "Lepidodendron Log");
+		LanguageRegistry.addName(new ItemStack(logLP, 1, 6), "Cordaites Log");
+		
+		LanguageRegistry.addName(new ItemStack(leavesLP, 1, 0), "Sigillaria Leaves");
+		LanguageRegistry.addName(new ItemStack(leavesLP, 1, 1), "Lepidodendron Leaves");
+		LanguageRegistry.addName(new ItemStack(leavesLP, 1, 2), "Cordaites Leaves");
+		
+		LanguageRegistry.addName(new ItemStack(saplingLP, 1, 0), "Sigillaria Sapling");
+		LanguageRegistry.addName(new ItemStack(saplingLP, 1, 3), "Lepidodendron Sapling");
+		LanguageRegistry.addName(new ItemStack(saplingLP, 1, 6), "Cordaites Sapling");
+		
+		LanguageRegistry.addName(new ItemStack(planksLP, 1, 0), "Sigillaria Planks");
+		LanguageRegistry.addName(new ItemStack(planksLP, 1, 1), "Lepidodendron Planks");
+		LanguageRegistry.addName(new ItemStack(planksLP, 1, 2), "Cordaites Planks");
 
 		// Item Localizations
 		LanguageRegistry.addName(crystal4D, "4D Crystal");
@@ -350,6 +393,10 @@ public class Animalia
 		GameRegistry.addRecipe(new ItemStack(olivinePickaxe), new Object[] { "XXX", " S ", " S ", Character.valueOf('X'), olivineGem, Character.valueOf('S'), Item.stick });
 		GameRegistry.addRecipe(new ItemStack(olivineShovel), new Object[] { "X", "S", "S", Character.valueOf('X'), olivineGem, Character.valueOf('S'), Item.stick });
 		GameRegistry.addRecipe(new ItemStack(olivineSword), new Object[] { "X", "X", "S", Character.valueOf('X'), olivineGem, Character.valueOf('S'), Item.stick });
+		
+		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 0), new ItemStack(logLP, 1, 0));
+		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 1), new ItemStack(logLP, 1, 3));
+		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 2), new ItemStack(logLP, 1, 6));
 	}
 
 	private void registerHarvestLevels()

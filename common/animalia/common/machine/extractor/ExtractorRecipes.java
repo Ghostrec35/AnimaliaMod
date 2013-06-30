@@ -38,22 +38,22 @@ public class ExtractorRecipes
 		this.metaExperience.put(Arrays.asList(itemID, metadata), experience);
 	}
 	
-	public Map getExtractingList()
+	public Map<Integer, ItemStack> getExtractingList()
 	{
 		return this.extractingList;
 	}
 
-	public Map getMetaExtractingList()
+	public Map<List<Integer>, ItemStack> getMetaExtractingList()
 	{
 		return this.metaExtractingList;
 	}
 	
-	public Map getExperienceList()
+	public Map<Integer, Float> getExperienceList()
 	{
 		return this.experienceList;
 	}
 	
-	public Map getMetaExperienceList()
+	public Map<List<Integer>, Float> getMetaExperienceList()
 	{
 		return this.metaExperience;
 	}
