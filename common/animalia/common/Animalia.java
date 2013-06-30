@@ -103,6 +103,8 @@ public class Animalia
 
 	// EP is an Abbreviation for Early Paleozoic
 	public static Block fossilEP;
+	
+	public static Block olivineBlock;
 
 	// LP is an Abbreviation for Late Paleozoic
 	public static Block fossilLP;
@@ -213,6 +215,7 @@ public class Animalia
 
 		extractorOff = new BlockExtractor(ConfigSettings.extractorProp.getInt(), false).setHardness(1F).setResistance(100);
 		extractorOn = new BlockExtractor(ConfigSettings.extractorProp.getInt() + 1, true).setHardness(1F).setResistance(100).setLightValue(1.0F);
+		olivineBlock = new Block(ConfigSettings.olivineBlock.getInt() + 1, true).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:olivineBlock");
 
 		// Items
 		crystal4D = new ItemCrystal4D(ConfigSettings.crystalGemProp.getInt()).setUnlocalizedName("animalia:crystal");
@@ -290,9 +293,13 @@ public class Animalia
 		// Crystal Ore Blocks
 		this.registerBlock(crystal4DOre, "CrystalOre");
 		this.registerBlock(crystal4DOreGlowing, "CrystalOreGlowing");
+		
+		//Gem Blocks
+		this.registerBlock(olivineBlock, "OlivineBlock");
 
 		this.registerBlock(extractorOff, "ExtractorOff");
 		this.registerBlock(extractorOn, "ExtractorOn");
+		
 	}
 
 	private static void registerBlock(Block block, String name)
@@ -340,6 +347,7 @@ public class Animalia
 		LanguageRegistry.addName(crystal4DOre, "4D Crystal Ore");
 
 		LanguageRegistry.addName(extractorOff, "Extractor");
+		LanguageRegistry.addName(olivineBlock, "Olivine Block");
 		
 		LanguageRegistry.addName(new ItemStack(logLP, 1, 0), "Sigillaria Log");
 		LanguageRegistry.addName(new ItemStack(logLP, 1, 3), "Lepidodendron Log");
@@ -392,6 +400,7 @@ public class Animalia
 		GameRegistry.addRecipe(new ItemStack(olivinePickaxe), new Object[] { "XXX", " S ", " S ", Character.valueOf('X'), olivineGem, Character.valueOf('S'), Item.stick });
 		GameRegistry.addRecipe(new ItemStack(olivineShovel), new Object[] { "X", "S", "S", Character.valueOf('X'), olivineGem, Character.valueOf('S'), Item.stick });
 		GameRegistry.addRecipe(new ItemStack(olivineSword), new Object[] { "X", "X", "S", Character.valueOf('X'), olivineGem, Character.valueOf('S'), Item.stick });
+		GameRegistry.addRecipe(new ItemStack(olivineBlock), new Object[] { "XXX", "XXX", "XXX", Character.valueOf('X'), olivineGem });
 		
 		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 0), new ItemStack(logLP, 1, 0));
 		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 1), new ItemStack(logLP, 1, 3));
