@@ -1,0 +1,23 @@
+[
+{
+  "modid": "Animalia-Mod",
+  "name": "Animalia",
+  "description": "Travel through time to the Paleozoic, Mesozoic, and Cenozoic eras!",
+  "version": "1.0.0.0",
+  "url": "http://www.minecraftforum.net/topic/1698543-",
+  "updateUrl": "",
+  "authorList": [
+    "Ghostrec35",
+    "DarkGuardsman",
+    "rich1051414",
+    "sdj64"
+  ],
+  "credits": "By numerous individuals, based on concepts derived from Jurassic Park: Operation Genesis, and others like it.",
+  "logoFile": "/mods/animalia/textures/logo/logo.png",
+  "screenshots": [
+  ],
+  "parent":"",
+  "dependencies": [
+  ]
+}
+]

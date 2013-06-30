@@ -35,6 +35,8 @@ import animalia.common.block.BlockLatePaleozoicLog;
 import animalia.common.block.BlockLatePaleozoicPlanks;
 import animalia.common.block.BlockLatePaleozoicSapling;
 import animalia.common.block.BlockMesozoicFossil;
+import animalia.common.config.ConfigHandler;
+import animalia.common.config.ConfigSettings;
 import animalia.common.item.ItemCrystal4D;
 import animalia.common.machine.extractor.BlockExtractor;
 import animalia.common.network.PacketHandler;
@@ -148,10 +150,7 @@ public class Animalia
 	@PreInit
 	public void loadPre(FMLPreInitializationEvent event)
 	{
-		Configuration config = new Configuration(new File(event.getModConfigurationDirectory() + "/Animalia.cfg"));
-		config.load();
-		Config.setUpConfig(config);
-		config.save();
+		ConfigHandler.initConfig(new File(event.getModConfigurationDirectory() + "/Animalia.cfg"));
 		updateThread.start();
 	}
 
@@ -200,23 +199,23 @@ public class Animalia
 
 	private void initObjects()
 	{
-		leavesLP = new BlockLatePaleozoicLeaves(Config.leavesLPProp.getInt()).setHardness(0.2F).setLightOpacity(1).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("animalia:leaves_late_paleo");
-		logLP = new BlockLatePaleozoicLog(Config.logsLPProp.getInt()).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:logs_late_paleo");
-		saplingLP = new BlockLatePaleozoicSapling(Config.saplingLPProp.getInt()).setHardness(0.0F).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("animalia:sapling_late_paleo");
-		planksLP = new BlockLatePaleozoicPlanks(Config.planksLPProp.getInt()).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:planks_late_paleo");
+		leavesLP = new BlockLatePaleozoicLeaves(ConfigSettings.leavesLPProp.getInt()).setHardness(0.2F).setLightOpacity(1).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("animalia:leaves_late_paleo");
+		logLP = new BlockLatePaleozoicLog(ConfigSettings.logsLPProp.getInt()).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:logs_late_paleo");
+		saplingLP = new BlockLatePaleozoicSapling(ConfigSettings.saplingLPProp.getInt()).setHardness(0.0F).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("animalia:sapling_late_paleo");
+		planksLP = new BlockLatePaleozoicPlanks(ConfigSettings.planksLPProp.getInt()).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:planks_late_paleo");
 		
-		fossilEP = new BlockEarlyPaleozoicFossil(Config.fossilEPProp.getInt(), Material.rock, "epFossil").setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_early_paleo");
-		fossilLP = new BlockLatePaleozoicFossil(Config.fossilLPProp.getInt(), Material.rock, "lpFossil").setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_late_paleo");
-		fossilMesozoic = new BlockMesozoicFossil(Config.fossilMesozoicProp.getInt(), Material.rock, "mesFossil").setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_meso");
+		fossilEP = new BlockEarlyPaleozoicFossil(ConfigSettings.fossilEPProp.getInt(), Material.rock, "epFossil").setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_early_paleo");
+		fossilLP = new BlockLatePaleozoicFossil(ConfigSettings.fossilLPProp.getInt(), Material.rock, "lpFossil").setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_late_paleo");
+		fossilMesozoic = new BlockMesozoicFossil(ConfigSettings.fossilMesozoicProp.getInt(), Material.rock, "mesFossil").setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_meso");
 
-		crystal4DOre = new Block4DCrystalOre(Config.crystalOreProp.getInt()).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:crystal_ore");
-		crystal4DOreGlowing = new Block4DCrystalOre(Config.crystalOreProp.getInt() + 1).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:crystal_ore").setLightValue(1.0F);
+		crystal4DOre = new Block4DCrystalOre(ConfigSettings.crystalOreProp.getInt()).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:crystal_ore");
+		crystal4DOreGlowing = new Block4DCrystalOre(ConfigSettings.crystalOreProp.getInt() + 1).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:crystal_ore").setLightValue(1.0F);
 
-		extractorOff = new BlockExtractor(Config.extractorProp.getInt(), false).setHardness(1F).setResistance(100);
-		extractorOn = new BlockExtractor(Config.extractorProp.getInt() + 1, true).setHardness(1F).setResistance(100).setLightValue(1.0F);
+		extractorOff = new BlockExtractor(ConfigSettings.extractorProp.getInt(), false).setHardness(1F).setResistance(100);
+		extractorOn = new BlockExtractor(ConfigSettings.extractorProp.getInt() + 1, true).setHardness(1F).setResistance(100).setLightValue(1.0F);
 
 		// Items
-		crystal4D = new ItemCrystal4D(Config.crystalGemProp.getInt()).setUnlocalizedName("animalia:crystal");
+		crystal4D = new ItemCrystal4D(ConfigSettings.crystalGemProp.getInt()).setUnlocalizedName("animalia:crystal");
 		olivineGem = new Item(5006).setUnlocalizedName("animalia:olivine_gem");
 
 		olivinePickaxe = new ItemPickaxe(5001, OLIVINE).setUnlocalizedName("animalia:tools/olivine_pickaxe");
