@@ -11,6 +11,9 @@ import net.minecraftforge.common.Configuration;
 
 public class ConfigHandler
 {
+    public static final String CATEGORY_TOOL = Configuration.CATEGORY_ITEM + Configuration.CATEGORY_SPLITTER + "tool";
+    public static final String CATEGORY_GEM = Configuration.CATEGORY_ITEM + Configuration.CATEGORY_SPLITTER + "gem";
+    
     public static Configuration config;
     
     public static void initConfig(File file)
@@ -67,13 +70,13 @@ public class ConfigHandler
 
     private static void addItemEntries(Configuration config) 
     {
-        ConfigSettings.crystalGemProp = config.get(config.CATEGORY_ITEM, "Crystal 4D Gem", 5000);
+        ConfigSettings.crystalGemProp = config.get(CATEGORY_GEM, "Crystal 4D Gem", 5000);
         ConfigSettings.crystalGemProp.comment = "Crystal 4D Gem Item ID";
         
-        ConfigSettings.extractorItemProp = config.get(config.CATEGORY_ITEM, "The Extractor Item", 6501);
+        ConfigSettings.extractorItemProp = config.get(CATEGORY_GEM, "The Extractor Item", 6501);
         ConfigSettings.extractorItemProp.comment = "Extractor Item ID";
         
-        ConfigSettings.olivineGemProp = config.get(config.CATEGORY_ITEM, "Olivine Gem", 6502);
+        ConfigSettings.olivineGemProp = config.get(CATEGORY_GEM, "Olivine Gem", 6502);
         ConfigSettings.olivineGemProp.comment = "Olivine Gem Item ID";
     }
 

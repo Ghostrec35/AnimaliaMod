@@ -13,6 +13,7 @@ import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import animalia.common.Text.TextColor;
+import animalia.common.ref.Reference;
 import cpw.mods.fml.common.ICraftingHandler;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.IPickupNotifier;
@@ -42,7 +43,7 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
                     player.addChatMessage(TextColor.GOLD.getColorString() + "You have the most current version of the Animalia mod installed");
                     break;
                 case Animalia.FALSE:
-                    player.addChatMessage(TextColor.RED.getColorString() + "You do not have the most recent recommended build of Animalia installed. The most recent version is: " + Animalia.latestModVersion + "; however, your current version is: " + Animalia.metadata.version);
+                    player.addChatMessage(TextColor.RED.getColorString() + "You do not have the most recent recommended build of Animalia installed. The most recent version is: " + Animalia.latestModVersion + "; however, your current version is: " + Reference.MOD_VERSION);
                     break;
                 case Animalia.ERROR:
                     player.addChatMessage(TextColor.DARKRED.getColorString() + animalia.common.Text.TextFormat.ITALICS + "Animalia mod was unable to check for updates.");

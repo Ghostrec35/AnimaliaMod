@@ -78,10 +78,6 @@ public class Animalia
 	@SidedProxy(clientSide = "animalia.client.ClientProxy", serverSide = "animalia.common.CommonProxy")
 	public static CommonProxy proxy;
 
-	// Retrieve the ModMetadata Object from Forge
-	@Metadata("AnimaliaMod")
-	public static ModMetadata metadata;
-
 	public static final int UNCHECKED = -2, ERROR = -1, FALSE = 0, TRUE = 1;
 	public static int isCurrentVersion = UNCHECKED;
 	public static String latestModVersion;
@@ -183,6 +179,9 @@ public class Animalia
 	 * @throws NumberFormatException */
 	private static int[] convertVersionNumber(final String[] buildStrings) throws NumberFormatException
 	{
+	    if(buildStrings == null)
+	        return null;
+	    
 		int[] buildInt = new int[buildStrings.length];
 		for (int i = 0; i < buildInt.length; i++)
 		{
@@ -297,12 +296,12 @@ public class Animalia
 
 	private static void registerBlock(Block block, String name)
 	{
-		GameRegistry.registerBlock(block, ItemBlock.class, name, metadata.modId);
+		GameRegistry.registerBlock(block, ItemBlock.class, name, Reference.MOD_ID);
 	}
 	
 	private static void registerMetadataBlock(Block block, String name)
 	{
-		GameRegistry.registerBlock(block, ItemBlockWithMetadata.class, name, metadata.modId);
+		GameRegistry.registerBlock(block, ItemBlockWithMetadata.class, name, Reference.MOD_ID);
 	}
 
 	private void registerItems()
@@ -327,7 +326,7 @@ public class Animalia
 
 	private static void registerItem(Item item, String name)
 	{
-		GameRegistry.registerItem(item, name, metadata.modId);
+		GameRegistry.registerItem(item, name, Reference.MOD_ID);
 	}
 
 	private void registerLocalizations()
@@ -437,8 +436,19 @@ public class Animalia
 			//Prevent checking for updates multiple times
 			return isCurrentVersion;
 		}
-		String[] currBuildStrings = metadata.version.split("\\.");
-		String[] newBuildStrings = instance.getCurrentRecommendedBuild().split("\\.");
+		
+		//The next few lines have been changed to bypass the NullPointerException thrown by the getCurrentRecommendedBuild method returning null (even though it shouldn't)
+		String[] currBuildStrings = null;
+		String[] newBuildStrings = null;
+		try
+		{
+		    currBuildStrings = Reference.MOD_VERSION.split("\\.");
+		    newBuildStrings = instance.getCurrentRecommendedBuild().split("\\.");
+		}
+		catch(NullPointerException e)
+		{
+		    
+		}
 		//Default to error in case failure occurs.
 		int isMostRecentVer = ERROR;
 
@@ -455,6 +465,9 @@ public class Animalia
 
 	private static int isSameVersion(int[] currInstallVer, int[] mostRecentVer)
 	{
+	    if(currInstallVer == null || mostRecentVer == null)
+	        return ERROR;
+	    
 		for (int index = 0; index < currInstallVer.length; index++)
 		{
 			if (currInstallVer[index] != mostRecentVer[index])
@@ -504,7 +517,6 @@ public class Animalia
 						buildableString.append(Character.valueOf((char) bis.read()));
 					}
 				}
-				connection.disconnect();
 			}
 			catch (MalformedURLException e)
 			{
