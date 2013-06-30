@@ -215,7 +215,7 @@ public class Animalia
 
 		extractorOff = new BlockExtractor(ConfigSettings.extractorProp.getInt(), false).setHardness(1F).setResistance(100);
 		extractorOn = new BlockExtractor(ConfigSettings.extractorProp.getInt() + 1, true).setHardness(1F).setResistance(100).setLightValue(1.0F);
-		olivineBlock = new Block(ConfigSettings.olivineBlock.getInt() + 1, Material.rock).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:olivineBlock");
+		olivineBlock = new Block(ConfigSettings.olivineBlock.getInt() + 1, Material.iron).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:olivineBlock");
 
 		// Items
 		crystal4D = new ItemCrystal4D(ConfigSettings.crystalGemProp.getInt()).setUnlocalizedName("animalia:crystal");
