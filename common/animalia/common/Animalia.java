@@ -351,7 +351,7 @@ public class Animalia
 		LanguageRegistry.addName(crystal4DOre, "4D Crystal Ore");
 
 		LanguageRegistry.addName(extractorOff, "Extractor");
-		LanguageRegistry.addName(olivineBlock, "Olivine Block");
+		LanguageRegistry.addName(olivineBlock, "Block of Olivine");
 		
 		LanguageRegistry.addName(new ItemStack(logLP, 1, 0), "Sigillaria Log");
 		LanguageRegistry.addName(new ItemStack(logLP, 1, 3), "Lepidodendron Log");
