@@ -13,16 +13,13 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemBlockWithMetadata;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -38,7 +35,10 @@ import animalia.common.block.BlockMesozoicFossil;
 import animalia.common.block.ItemBlockMetadata;
 import animalia.common.config.ConfigHandler;
 import animalia.common.config.ConfigSettings;
+import animalia.common.event.EventManager;
+import animalia.common.item.ItemChisel;
 import animalia.common.item.ItemCrystal4D;
+import animalia.common.item.ItemOlivineArmor;
 import animalia.common.machine.extractor.BlockExtractor;
 import animalia.common.network.PacketHandler;
 import animalia.common.ref.Reference;
@@ -50,10 +50,8 @@ import cpw.mods.fml.common.IWorldGenerator;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.Metadata;
 import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
-import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -123,6 +121,9 @@ public class Animalia
 	// Item Crystal
 	public static Item crystal4D;
 
+	// Item Chisel
+	public static ItemChisel chiselItem = new ItemChisel(6000, isCurrentVersion, OLIVINE, null);
+	
 	/*
 	 * Olivine Tools
 	 */
@@ -157,20 +158,20 @@ public class Animalia
 	@Init
 	public void load(FMLInitializationEvent event)
 	{
-		this.initObjects();
-		this.initCreativeTabs();
-		this.finishCreativeTabInit();
-		this.registerBlocks();
-		this.registerItems();
-		this.registerLocalizations();
-		this.registerRecipes();
-		this.registerHarvestLevels();
+		initObjects();
+		initCreativeTabs();
+		finishCreativeTabInit();
+		registerBlocks();
+		registerItems();
+		registerLocalizations();
+		registerRecipes();
+		registerHarvestLevels();
 		Animalia.proxy.registerTileEntities();
 		Animalia.proxy.registerTextureInfo();
 		Animalia.proxy.registerRenders();
 		NetworkRegistry.instance().registerGuiHandler(instance, proxy);
-		this.registerEventManager(new EventManager());
-		this.registerTickHandlers();
+		registerEventManager(new EventManager());
+		registerTickHandlers();
 
 		isCurrentVersion = isNewestRecommendedBuild();
 	}
@@ -229,10 +230,10 @@ public class Animalia
 		olivineHoe = new ItemHoe(5004, OLIVINE).setUnlocalizedName("animalia:tools/olivine_hoe");
 		olivineSword = new ItemSword(5005, OLIVINE).setUnlocalizedName("animalia:weapons/olivine_sword");
 
-		olivineHelmet = new ItemArmor(6000, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 0).setUnlocalizedName("animalia:armors/olivine_helmet");
-		olivineChestplate = new ItemArmor(6001, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 1).setUnlocalizedName("animalia:armors/olivine_chestplate").setCreativeTab(tabArmors);
-		olivineLeggings = new ItemArmor(6002, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 2).setUnlocalizedName("animalia:armors/olivine_leggings").setCreativeTab(tabArmors);
-		olivineBoots = new ItemArmor(6003, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 3).setUnlocalizedName("animalia:armors/olivine_boots").setCreativeTab(tabArmors);
+		olivineHelmet = new ItemOlivineArmor(6000, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 0).setUnlocalizedName("animalia:armors/olivine_helmet");
+		olivineChestplate = new ItemOlivineArmor(6001, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 1).setUnlocalizedName("animalia:armors/olivine_chestplate").setCreativeTab(tabArmors);
+		olivineLeggings = new ItemOlivineArmor(6002, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 2).setUnlocalizedName("animalia:armors/olivine_leggings").setCreativeTab(tabArmors);
+		olivineBoots = new ItemOlivineArmor(6003, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 3).setUnlocalizedName("animalia:armors/olivine_boots").setCreativeTab(tabArmors);
 
 	}
 
@@ -284,25 +285,25 @@ public class Animalia
 	private void registerBlocks()
 	{
 		// Fossil Blocks
-		this.registerBlock(fossilEP, "FossilEP");
-		this.registerBlock(fossilLP, "FossilLP");
-		this.registerBlock(fossilMesozoic, "FossilMesozoic");
+		registerBlock(fossilEP, "FossilEP");
+		registerBlock(fossilLP, "FossilLP");
+		registerBlock(fossilMesozoic, "FossilMesozoic");
 		
 		//tree blocks
-		this.registerMetadataBlock(logLP, "LogLP");
-		this.registerMetadataBlock(leavesLP, "LeavesLP");
-		this.registerMetadataBlock(saplingLP, "SaplingLP");
-		this.registerMetadataBlock(planksLP, "PlanksLP");
+		registerMetadataBlock(logLP, "LogLP");
+		registerMetadataBlock(leavesLP, "LeavesLP");
+		registerMetadataBlock(saplingLP, "SaplingLP");
+		registerMetadataBlock(planksLP, "PlanksLP");
 
 		// Crystal Ore Blocks
-		this.registerBlock(crystal4DOre, "CrystalOre");
-		this.registerBlock(crystal4DOreGlowing, "CrystalOreGlowing");
+		registerBlock(crystal4DOre, "CrystalOre");
+		registerBlock(crystal4DOreGlowing, "CrystalOreGlowing");
 		
 		//Gem Blocks
-		this.registerBlock(olivineBlock, "OlivineBlock");
+		registerBlock(olivineBlock, "OlivineBlock");
 
-		this.registerBlock(extractorOff, "ExtractorOff");
-		this.registerBlock(extractorOn, "ExtractorOn");
+		registerBlock(extractorOff, "ExtractorOff");
+		registerBlock(extractorOn, "ExtractorOn");
 		
 	}
 
@@ -319,21 +320,21 @@ public class Animalia
 	private void registerItems()
 	{
 		// Gems
-		this.registerItem(crystal4D, "itemCrystal4D");
-		this.registerItem(olivineGem, "itemOlivineGem");
+		registerItem(crystal4D, "itemCrystal4D");
+		registerItem(olivineGem, "itemOlivineGem");
 
 		// Olivine Tools
-		this.registerItem(olivineAxe, "itemOlivineAxe");
-		this.registerItem(olivineHoe, "itemOlivineHoe");
-		this.registerItem(olivinePickaxe, "itemOlivinePickaxe");
-		this.registerItem(olivineShovel, "itemOlivineShovel");
-		this.registerItem(olivineSword, "itemOlivineSword");
+		registerItem(olivineAxe, "itemOlivineAxe");
+		registerItem(olivineHoe, "itemOlivineHoe");
+		registerItem(olivinePickaxe, "itemOlivinePickaxe");
+		registerItem(olivineShovel, "itemOlivineShovel");
+		registerItem(olivineSword, "itemOlivineSword");
 
 		// Olivine Armor
-		this.registerItem(olivineHelmet, "itemOlivineHelmet");
-		this.registerItem(olivineChestplate, "itemOlivineChestplate");
-		this.registerItem(olivineLeggings, "itemOlivineLeggings");
-		this.registerItem(olivineBoots, "itemOlivineBoots");
+		registerItem(olivineHelmet, "itemOlivineHelmet");
+		registerItem(olivineChestplate, "itemOlivineChestplate");
+		registerItem(olivineLeggings, "itemOlivineLeggings");
+		registerItem(olivineBoots, "itemOlivineBoots");
 	}
 
 	private static void registerItem(Item item, String name)

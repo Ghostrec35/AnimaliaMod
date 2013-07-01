@@ -1,4 +1,4 @@
-package animalia.common;
+package animalia.common.event;
 
 import java.util.Random;
 
@@ -12,6 +12,8 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+import animalia.common.Animalia;
 import animalia.common.Text.TextColor;
 import animalia.common.ref.Reference;
 import cpw.mods.fml.common.ICraftingHandler;
@@ -161,7 +163,6 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
 	 **/
 	public void addOreSpawn(Block block, World world, Random random, int blockXPos, int blockZPos, int maxX, int maxZ, int maxVeinSize, int chancesToSpawn, int minY, int maxY) 
 	{
-		int maxPossY = minY + (maxY - 1);
 		assert maxY > minY: "The maximum Y must be greater than the Minimum Y";
 		assert maxX > 0 && maxX <= 16: "addOreSpawn: The Maximum X must be greater than 0 and less than 16";
 		assert minY > 0: "addOreSpawn: The Minimum Y must be greater than 0";
@@ -175,6 +176,15 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
 			int posY = minY + random.nextInt(diffBtwnMinMaxY);
 			int posZ = blockZPos + random.nextInt(maxZ);
 			(new WorldGenMinable(block.blockID, maxVeinSize)).generate(world, random, posX, posY, posZ);
+		}
+	}
+	
+	@ForgeSubscribe
+	public void itemBroken(PlayerDestroyItemEvent event)
+	{
+		if(Block.blocksList[event.original.getItem().itemID] == Animalia.fossilEP)
+		{
+			event.entityPlayer.addChatMessage("Broke EP Block");
 		}
 	}
 }
