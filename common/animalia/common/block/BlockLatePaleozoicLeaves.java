@@ -139,9 +139,9 @@ public class BlockLatePaleozoicLeaves extends BlockLeaves implements IShearable
      */
     public void registerIcons(IconRegister par1IconRegister)
     {
-        for(int i = 0; i < 5; i++){
-        	textureFancy[i] = par1IconRegister.registerIcon("Animalia:leaves_"+treeNames[i]);
-        	textureFast[i] = par1IconRegister.registerIcon("Animalia:leaves_"+treeNames[i]+"_opaque");
+        for(int i = 0; i < 3; i++){
+        	textureFancy[i] = par1IconRegister.registerIcon("animalia:leaves_"+treeNames[i]);
+        	textureFast[i] = par1IconRegister.registerIcon("animalia:leaves_"+treeNames[i]+"_opaque");
         }
     }
 

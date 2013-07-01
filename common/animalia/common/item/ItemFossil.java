@@ -1,11 +1,93 @@
 package animalia.common.item;
 
-import net.minecraft.item.Item;
+import java.util.List;
+import java.util.Random;
 
-public class ItemFossil extends Item
+import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
+import animalia.common.Animalia;
+import animalia.common.block.IExtractable;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+public class ItemFossil extends Item implements IExtractable
 {
+    private String[] fossilNames = 
+        {
+            "early_paleo",
+            "late_paleo",
+            "meso",
+            "fossil_4",
+            "fossil_5",
+        };
+    
+    @SideOnly(Side.CLIENT)
+    private Icon[] textures = new Icon[fossilNames.length];
+    
 	public ItemFossil(int itemID)
 	{
 		super(itemID);
+        this.setHasSubtypes(true);
+        this.setMaxDamage(0);
+        this.setCreativeTab(Animalia.tabMaterial);
 	}
+	
+	public Icon getIconFromDamage(int par1)
+    {
+	    if(par1 >= 0 && par1 <= fossilNames.length)
+            return textures[par1];
+        else 
+            return null;
+    }
+	
+	public int idDropped(int par1, Random par2Random, int par3)
+    {
+        return Animalia.saplingLP.blockID;
+    }
+
+	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List list)
+    {
+	    list.add(new ItemStack(par1, 1, 0));
+	    list.add(new ItemStack(par1, 1, 1));
+	    list.add(new ItemStack(par1, 1, 2));
+    }
+	
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister register)
+	{
+	    for(int i = 0; i < 3; i++)
+	    {
+	        textures[i] = register.registerIcon("animalia:fossil_" + fossilNames[i]);
+	    }
+	}
+	
+	public String getUnlocalizedName(ItemStack par1ItemStack)
+    {
+        int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 15);
+        return super.getUnlocalizedName() + "." + fossilNames[i];
+    }
+	
+	public void addInformation(ItemStack itemstack, EntityPlayer par2EntityPlayer, List list, boolean par4) 
+	{
+	    if(itemstack.getItemDamage() == 0)
+	        list.add("An Early Paleozoic Fossil");
+	    else if(itemstack.getItemDamage() == 1)
+	        list.add("A Late Paleozoic Fossil");
+	    else if(itemstack.getItemDamage() == 2)
+	        list.add("A Mesozoic Fossil");
+	    else
+	        list.add("Invalid Value");
+	}
+
+    @Override
+    public ItemStack onExtract(int meta)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

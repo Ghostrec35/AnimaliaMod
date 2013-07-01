@@ -6,17 +6,17 @@ import animalia.common.block.IExtractable;
 
 public class ItemExtractable extends Item implements IExtractable
 {
-	private final ItemStack[] extractableItems;
+	private final ItemStack extractableItem;
 	
-	public ItemExtractable(int itemID, ItemStack[] extractableItems)
+	public ItemExtractable(int itemID, ItemStack extractableItem)
 	{
 		super(itemID);
-		this.extractableItems = extractableItems;
+		this.extractableItem = extractableItem;
 	}
 
-	@Override
-	public ItemStack[] getExtractionPossiblities(int meta) 
-	{
-		return extractableItems;
-	}
+    @Override
+    public ItemStack onExtract(int meta)
+    {
+        return extractableItem;
+    }
 }

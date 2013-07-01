@@ -7,8 +7,8 @@ import net.minecraft.item.ItemTool;
 
 public class ItemChisel extends ItemTool
 {
-	public ItemChisel(int par1, EnumToolMaterial par3EnumToolMaterial, Block[] par4ArrayOfBlock) 
+	public ItemChisel(int par1, EnumToolMaterial par3EnumToolMaterial) 
 	{
-		super(par1, 2, par3EnumToolMaterial, new Block[]{Animalia.fossilEP, Animalia.fossilLP, Animalia.fossilMesozoic});
+		super(par1, 2, par3EnumToolMaterial, new Block[]{Animalia.fossilBlock});
 	}
 }

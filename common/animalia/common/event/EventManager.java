@@ -33,8 +33,7 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
 	@Override
 	public void notifyPickup(EntityItem item, EntityPlayer player)
 	{
-		if(item.getEntityItem().itemID == Animalia.fossilEP.blockID)
-			player.addChatMessage("You picked up an Early Paleozoic Fossil!");
+	    
 	}
 
 	@Override
@@ -101,9 +100,9 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
 	{
 		switch(world.provider.dimensionId)
 		{
-		case -1: generateNether(world, random, chunkX * 16, chunkZ * 16);
-		case 0: generateSurface(world, random, chunkX * 16, chunkZ * 16);
-		case 1: generateEnd(world, random, chunkX * 16, chunkZ * 16);
+    		case -1: generateNether(world, random, chunkX * 16, chunkZ * 16);
+    		case 0: generateSurface(world, random, chunkX * 16, chunkZ * 16);
+    		case 1: generateEnd(world, random, chunkX * 16, chunkZ * 16);
 		}
 	}
 
@@ -115,9 +114,9 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
 	private void generateSurface(World world, Random random, int blockX, int blockZ) 
 	{
 		//Full Documentation for this Helper methods found below.
-		this.addOreSpawn(Animalia.fossilEP, world, random, blockX, blockZ, 16, 16, 40, 10, 20);
-		this.addOreSpawn(Animalia.fossilLP, world, random, blockX, blockZ, 16, 16, 40, 10, 20, 40);
-		this.addOreSpawn(Animalia.fossilMesozoic, world, random, blockX, blockZ, 16, 16, 40, 10, 40, 60);
+		this.addOreSpawn(Animalia.fossilBlock, world, random, blockX, blockZ, 16, 16, 40, 10, 20);
+		this.addOreSpawn(Animalia.fossilBlock, world, random, blockX, blockZ, 16, 16, 40, 10, 20, 40, 1);
+		this.addOreSpawn(Animalia.fossilBlock, world, random, blockX, blockZ, 16, 16, 40, 10, 40, 60, 2);
 		
 		this.addOreSpawn(Animalia.crystal4DOre, world, random, blockX, blockZ, 16, 16, 30, 30, 6);
 	}
@@ -143,7 +142,7 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
 	 **/
 	public void addOreSpawn(Block block, World world, Random random, int blockXPos, int blockZPos, int maxX, int maxZ, int maxVeinSize, int chancesToSpawn, int maxY)
 	{
-		addOreSpawn(block, world, random, blockXPos, blockZPos, maxX, maxZ, maxVeinSize, chancesToSpawn, 0, maxY);
+		addOreSpawn(block, world, random, blockXPos, blockZPos, maxX, maxZ, maxVeinSize, chancesToSpawn, 0, maxY, 0);
 	}
 
 	/**
@@ -160,14 +159,16 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
 	 * @param An int for the Number of chances available for the Block to spawn per-chunk
 	 * @param An int for the minimum Y-Coordinate height at which this block may spawn
 	 * @param An int for the maximum Y-Coordinate height at which this block may spawn
+	 * @param An int for the metadata of the Block
 	 **/
-	public void addOreSpawn(Block block, World world, Random random, int blockXPos, int blockZPos, int maxX, int maxZ, int maxVeinSize, int chancesToSpawn, int minY, int maxY) 
+	public void addOreSpawn(Block block, World world, Random random, int blockXPos, int blockZPos, int maxX, int maxZ, int maxVeinSize, int chancesToSpawn, int minY, int maxY, int metadata) 
 	{
 		assert maxY > minY: "The maximum Y must be greater than the Minimum Y";
 		assert maxX > 0 && maxX <= 16: "addOreSpawn: The Maximum X must be greater than 0 and less than 16";
 		assert minY > 0: "addOreSpawn: The Minimum Y must be greater than 0";
 		assert maxY < 256 && maxY > 0: "addOreSpawn: The Maximum Y must be less than 256 but greater than 0";
 		assert maxZ > 0 && maxZ <= 16: "addOreSpawn: The Maximum Z must be greater than 0 and less than 16";
+		assert metadata > 0 && metadata <= 16: "addOreSpawn: The metadata value used is invalid! Value: " + metadata;
 		
 		int diffBtwnMinMaxY = maxY - minY;
 		for(int x = 0; x < chancesToSpawn; x++)
@@ -175,16 +176,7 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
 			int posX = blockXPos + random.nextInt(maxX);
 			int posY = minY + random.nextInt(diffBtwnMinMaxY);
 			int posZ = blockZPos + random.nextInt(maxZ);
-			(new WorldGenMinable(block.blockID, maxVeinSize)).generate(world, random, posX, posY, posZ);
-		}
-	}
-	
-	@ForgeSubscribe
-	public void itemBroken(PlayerDestroyItemEvent event)
-	{
-		if(Block.blocksList[event.original.getItem().itemID] == Animalia.fossilEP)
-		{
-			event.entityPlayer.addChatMessage("Broke EP Block");
+			(new WorldGenMinable(block.blockID, maxVeinSize, Block.stone.blockID, metadata)).generate(world, random, posX, posY, posZ);
 		}
 	}
 }

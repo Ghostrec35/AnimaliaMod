@@ -202,7 +202,7 @@ public class BlockLatePaleozoicSapling extends Block implements IPlantable{
     @Override
     public void registerIcons(IconRegister par1IconRegister)
     {
-    	for(int i = 0; i < treeNames.length; i++){
+    	for(int i = 0; i < 3; i++){
     		this.iconArray[i] = par1IconRegister.registerIcon("animalia:sapling_"+treeNames[i]);
     	}
     }
