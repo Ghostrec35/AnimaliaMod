@@ -12,14 +12,9 @@ public class CommonProxy implements IGuiHandler
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		TileEntity te = world.getBlockTileEntity(x, y, z);
-		if (te != null)
+		switch (ID)
 		{
-			switch (ID)
-			{
-				case Constants.EXTRACTOR_GUI_ID:
-					return new ContainerExtractor(player.inventory, (TileEntityExtractor) world.getBlockTileEntity(x, y, z));
-			}
+			case Constants.EXTRACTOR_GUI_ID: return new ContainerExtractor(player.inventory, (TileEntityExtractor) world.getBlockTileEntity(x, y, z));
 		}
 		return null;
 	}

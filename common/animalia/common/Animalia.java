@@ -10,7 +10,6 @@ import java.net.URL;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
@@ -20,7 +19,6 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraftforge.common.EnumHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import animalia.client.ClientTickHandler;
@@ -30,17 +28,23 @@ import animalia.common.block.BlockLatePaleozoicLeaves;
 import animalia.common.block.BlockLatePaleozoicLog;
 import animalia.common.block.BlockLatePaleozoicPlanks;
 import animalia.common.block.BlockLatePaleozoicSapling;
+import animalia.common.block.BlockPermafrost;
 import animalia.common.block.ItemBlockMetadata;
 import animalia.common.config.ConfigHandler;
 import animalia.common.config.ConfigSettings;
 import animalia.common.event.EventManager;
+import animalia.common.item.ItemArtificialEgg;
 import animalia.common.item.ItemChisel;
 import animalia.common.item.ItemCrystal4D;
 import animalia.common.item.ItemFossil;
+import animalia.common.item.ItemMammothHair;
+import animalia.common.item.ItemMammothTrunk;
 import animalia.common.item.ItemOlivineArmor;
 import animalia.common.machine.extractor.BlockExtractor;
 import animalia.common.network.PacketHandler;
+import animalia.common.ref.ArmorEnums;
 import animalia.common.ref.Reference;
+import animalia.common.ref.ToolEnums;
 import cpw.mods.fml.common.ICraftingHandler;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.IPickupNotifier;
@@ -67,7 +71,7 @@ import cpw.mods.fml.relauncher.Side;
 public class Animalia
 {
 	// Retrieve the Constructed Mod Instance from Forge
-	@Instance("AnimaliaMod")
+	@Instance(Reference.MOD_ID)
 	public static Animalia instance;
 	
 	private final Thread updateThread = new Thread(new UpdateThread());
@@ -88,16 +92,6 @@ public class Animalia
 	public static CreativeTabAnimalia tabMachine;
 	public static CreativeTabAnimalia tabDeco;
 
-	/*
-	 * EnumToolMaterial Values
-	 */
-	public static EnumToolMaterial OLIVINE = EnumHelper.addToolMaterial("OLIVINE", 3, 1100, 6F, 3, 16);
-
-	/*
-	 * EnumArmorMaterial Values
-	 */
-	public static EnumArmorMaterial OLIVINEARMOR = EnumHelper.addArmorMaterial("OLIVINE", 25, new int[] { 4, 5, 8, 6 }, 20);
-
 	// EP is an Abbreviation for Early Paleozoic
 	public static Block fossilBlock;
 	
@@ -113,6 +107,9 @@ public class Animalia
 	// Crystal Ore
 	public static Block crystal4DOre;
 	public static Block crystal4DOreGlowing;
+	
+	// Permafrost
+	public static Block permafrost;
 
 	// Item Crystal
 	public static Item crystal4D;
@@ -122,6 +119,16 @@ public class Animalia
 	
 	// Item Fossil
 	public static Item fossilItem;
+	
+	// Item Syringes
+	public static Item syringeItem;
+	
+	// Item Artificial Egg
+	public static Item artificialEgg;
+	
+	// Mammoth Items
+	public static Item mammothHair;
+	public static Item mammothTrunkFrozen;
 	
 	/*
 	 * Olivine Tools
@@ -217,23 +224,30 @@ public class Animalia
 		
 		olivineBlock = new Block(ConfigSettings.olivineBlock.getInt() + 1, Material.iron).setHardness(5.0F).setResistance(10.0F).setUnlocalizedName("animalia:olivineBlock").setStepSound(Block.soundMetalFootstep);
 
+		permafrost = new BlockPermafrost(4054).setHardness(0.4F).setResistance(1.0F).setUnlocalizedName("animalia:permafrost");
+		
 		// Items
 		crystal4D = new ItemCrystal4D(ConfigSettings.crystalGemProp.getInt()).setUnlocalizedName("animalia:crystal");
 		olivineGem = new Item(5006).setUnlocalizedName("animalia:olivine_gem");
 
-		olivinePickaxe = new ItemPickaxe(5001, OLIVINE).setUnlocalizedName("animalia:tools/olivine_pickaxe");
-		olivineAxe = new ItemAxe(5002, OLIVINE).setUnlocalizedName("animalia:tools/olivine_axe");
-		olivineShovel = new ItemSpade(5003, OLIVINE).setUnlocalizedName("animalia:tools/olivine_spade");
-		olivineHoe = new ItemHoe(5004, OLIVINE).setUnlocalizedName("animalia:tools/olivine_hoe");
-		olivineSword = new ItemSword(5005, OLIVINE).setUnlocalizedName("animalia:weapons/olivine_sword");
+		olivinePickaxe = new ItemPickaxe(5001, ToolEnums.OLIVINE).setUnlocalizedName("animalia:tools/olivine_pickaxe");
+		olivineAxe = new ItemAxe(5002, ToolEnums.OLIVINE).setUnlocalizedName("animalia:tools/olivine_axe");
+		olivineShovel = new ItemSpade(5003, ToolEnums.OLIVINE).setUnlocalizedName("animalia:tools/olivine_spade");
+		olivineHoe = new ItemHoe(5004, ToolEnums.OLIVINE).setUnlocalizedName("animalia:tools/olivine_hoe");
+		olivineSword = new ItemSword(5005, ToolEnums.OLIVINE).setUnlocalizedName("animalia:weapons/olivine_sword");
 
-		olivineHelmet = new ItemOlivineArmor(6000, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 0).setUnlocalizedName("animalia:armors/olivine_helmet");
-		olivineChestplate = new ItemOlivineArmor(6001, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 1).setUnlocalizedName("animalia:armors/olivine_chestplate");
-		olivineLeggings = new ItemOlivineArmor(6002, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 2).setUnlocalizedName("animalia:armors/olivine_leggings");
-		olivineBoots = new ItemOlivineArmor(6003, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 3).setUnlocalizedName("animalia:armors/olivine_boots");
+		olivineHelmet = new ItemOlivineArmor(6000, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 0).setUnlocalizedName("animalia:armors/olivine_helmet");
+		olivineChestplate = new ItemOlivineArmor(6001, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 1).setUnlocalizedName("animalia:armors/olivine_chestplate");
+		olivineLeggings = new ItemOlivineArmor(6002, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 2).setUnlocalizedName("animalia:armors/olivine_leggings");
+		olivineBoots = new ItemOlivineArmor(6003, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 3).setUnlocalizedName("animalia:armors/olivine_boots");
 
-		chiselItem = new ItemChisel(6050, OLIVINE).setUnlocalizedName("animalia:tools/chisel");
+		chiselItem = new ItemChisel(6050, EnumToolMaterial.IRON).setUnlocalizedName("animalia:tools/chisel");
 		fossilItem = new ItemFossil(6051).setUnlocalizedName("animalia:fossil_item");
+		
+		mammothHair = new ItemMammothHair(6052).setUnlocalizedName("animalia:mammothHair");
+		mammothTrunkFrozen = new ItemMammothTrunk(6053, 4, false).setUnlocalizedName("animalia:mammothTrunkFrozen");
+		
+		artificialEgg = new ItemArtificialEgg(6054, Block.dirt).setUnlocalizedName("animalia:artficialEgg");
 	}
 
 	private void initCreativeTabs()
@@ -259,6 +273,8 @@ public class Animalia
 		olivineBlock.setCreativeTab(tabBlock);
 
 		crystal4DOre.setCreativeTab(tabBlock);
+		
+		permafrost.setCreativeTab(tabBlock);
 
 		crystal4D.setCreativeTab(tabMaterial);
 		olivineGem.setCreativeTab(tabMaterial);
@@ -280,6 +296,11 @@ public class Animalia
 		
 		chiselItem.setCreativeTab(tabTools);
 		fossilItem.setCreativeTab(tabMaterial);
+		
+		mammothHair.setCreativeTab(tabMaterial);
+		mammothTrunkFrozen.setCreativeTab(tabMaterial);
+	
+		artificialEgg.setCreativeTab(tabMaterial);
 	}
 
 	private void registerBlocks()
@@ -303,6 +324,8 @@ public class Animalia
 		registerBlock(extractorOff, "ExtractorOff");
 		registerBlock(extractorOn, "ExtractorOn");
 		
+		//Permafrost
+		registerBlock(permafrost, "PermafrostBlock");
 	}
 
 	private static void registerBlock(Block block, String name)
@@ -336,6 +359,11 @@ public class Animalia
 		
 		registerItem(chiselItem, "itemChisel");
 		registerItem(fossilItem, "itemFossil");
+		
+		registerItem(mammothHair, "itemMammothHair");
+		registerItem(mammothTrunkFrozen, "itemMammothTrunkFrozen");
+		
+		registerItem(artificialEgg, "itemArtificialEgg");
 	}
 
 	private static void registerItem(Item item, String name)
@@ -354,6 +382,8 @@ public class Animalia
 
 		LanguageRegistry.addName(extractorOff, "Extractor");
 		LanguageRegistry.addName(olivineBlock, "Block of Olivine");
+		
+		LanguageRegistry.addName(permafrost, "Permafrost");
 		
 		LanguageRegistry.addName(new ItemStack(logLP, 1, 0), "Sigillaria Log");
 		LanguageRegistry.addName(new ItemStack(logLP, 1, 3), "Lepidodendron Log");
@@ -379,6 +409,11 @@ public class Animalia
 		LanguageRegistry.addName(crystal4D, "4D Crystal");
 		
 		LanguageRegistry.addName(chiselItem, "Chisel");
+		
+		LanguageRegistry.addName(mammothHair, "Mammoth Hair");
+		LanguageRegistry.addName(mammothTrunkFrozen, "Frozen Mammoth Trunk");
+		
+		LanguageRegistry.addName(artificialEgg, "Artificial Egg");
 
 		LanguageRegistry.addName(olivineGem, "Olivine Gem");
 		LanguageRegistry.addName(olivineAxe, "Olivine Axe");
@@ -413,6 +448,7 @@ public class Animalia
 		GameRegistry.addRecipe(new ItemStack(olivineShovel), new Object[] { "X", "S", "S", Character.valueOf('X'), olivineGem, Character.valueOf('S'), Item.stick });
 		GameRegistry.addRecipe(new ItemStack(olivineSword), new Object[] { "X", "X", "S", Character.valueOf('X'), olivineGem, Character.valueOf('S'), Item.stick });
 		GameRegistry.addRecipe(new ItemStack(olivineBlock), new Object[] { "XXX", "XXX", "XXX", Character.valueOf('X'), olivineGem });
+		GameRegistry.addRecipe(new ItemStack(chiselItem), new Object[] {"X", "S", Character.valueOf('X'), Item.ingotIron, Character.valueOf('S'), Item.stick});
 		
 		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 0), new ItemStack(logLP, 1, 0));
 		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 1), new ItemStack(logLP, 1, 3));

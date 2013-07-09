@@ -34,10 +34,12 @@ public class BlockExtractor extends BlockContainer
 		super(blockID, Material.rock);
 		this.isActive = b;
 	}
-        public boolean renderAsNormalBlock()
-        {
-            return false;
-        }
+	
+    public boolean renderAsNormalBlock()
+    {
+        return false;
+    }
+    
 	public static void updateExtractorBlockState(boolean b, World world, int xCoord, int yCoord, int zCoord)
 	{
 		int l = world.getBlockMetadata(xCoord, yCoord, zCoord);
@@ -128,7 +130,7 @@ public class BlockExtractor extends BlockContainer
 	{
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
-		if (te == null || !(te instanceof TileEntityExtractor))
+		if (te == null /*|| !(te instanceof TileEntityExtractor)*/)
 		{
 			return false;
 		}

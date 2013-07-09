@@ -15,21 +15,21 @@ import animalia.common.block.IExtractable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemFossil extends Item implements IExtractable
+public class ItemSyringe extends Item implements IExtractable
 {
-    private String[] fossilNames = 
+    private String[] syringeNames = 
         {
-            "early_paleo",
-            "late_paleo",
-            "meso",
-            "fossil_4",
+            "empty",
+            "early_paleo_dna",
+            "late_paleo_dna",
+            "meso_dna",
             "fossil_5",
         };
     
     @SideOnly(Side.CLIENT)
-    private Icon[] textures = new Icon[fossilNames.length];
+    private Icon[] textures = new Icon[2];
     
-	public ItemFossil(int itemID)
+	public ItemSyringe(int itemID)
 	{
 		super(itemID);
         this.setHasSubtypes(true);
@@ -39,10 +39,10 @@ public class ItemFossil extends Item implements IExtractable
 	
 	public Icon getIconFromDamage(int par1)
     {
-	    if(par1 >= 0 && par1 <= fossilNames.length)
-            return textures[par1];
-        else 
-            return null;
+	    if(par1 == 0)
+	        return textures[0];
+	    else
+	        return textures[1];
     }
 	
 	public int idDropped(int par1, Random par2Random, int par3)
@@ -60,16 +60,14 @@ public class ItemFossil extends Item implements IExtractable
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
 	{
-	    for(int i = 0; i < 3; i++)
-	    {
-	        textures[i] = register.registerIcon("animalia:fossil_" + fossilNames[i]);
-	    }
+	    textures[0] = register.registerIcon("animalia:syringe_empty");
+	    textures[1] = register.registerIcon("animalia:syringe_full");
 	}
 	
 	public String getUnlocalizedName(ItemStack par1ItemStack)
     {
         int i = MathHelper.clamp_int(par1ItemStack.getItemDamage(), 0, 15);
-        return super.getUnlocalizedName() + "." + fossilNames[i];
+        return super.getUnlocalizedName() + "." + syringeNames[i];
     }
 	
 	public void addInformation(ItemStack itemstack, EntityPlayer par2EntityPlayer, List list, boolean par4) 

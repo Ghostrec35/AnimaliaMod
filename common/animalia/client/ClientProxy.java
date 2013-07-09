@@ -27,13 +27,9 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
 	{
-		TileEntity te = world.getBlockTileEntity(x, y, z);
-		if(te != null)
+		switch(ID)
 		{
-			switch(ID)
-			{
-			case Constants.EXTRACTOR_GUI_ID: return new GuiExtractor(player.inventory, (TileEntityExtractor)te); 
-			}
+		    case Constants.EXTRACTOR_GUI_ID: return new GuiExtractor(player.inventory, (TileEntityExtractor) world.getBlockTileEntity(x, y, z)); 
 		}
 		return null;
 	}
@@ -41,22 +37,17 @@ public class ClientProxy extends CommonProxy
 	public void registerRenders() 
 	{
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityExtractor.class, new RenderExtractor());
-                BlockExtractor.modelID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(BlockExtractor.modelID, new BlockExtractorInventoryRender());
-                
+        BlockExtractor.modelID = RenderingRegistry.getNextAvailableRenderId();
+        RenderingRegistry.registerBlockHandler(BlockExtractor.modelID, new BlockExtractorInventoryRender());        
 	}
 	
 	public void registerTextureInfo() 
 	{
-//		File file = new File("test.txt");
-//		System.out.println(file.getAbsolutePath());
-//		File file1 = new File("mods/animalia/textures/machines/extractor.png");
-//		System.out.println("File Exists: " + file1.exists());
+	    
 	}
 	
 	public void registerTileEntities()
 	{
-            //Needed a more unique name
 		ClientRegistry.registerTileEntity(TileEntityExtractor.class, "AnimaliaExtractor", new RenderExtractor());
 	}
 }

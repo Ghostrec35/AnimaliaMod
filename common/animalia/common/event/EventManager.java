@@ -16,6 +16,7 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import animalia.common.Animalia;
 import animalia.common.Text.TextColor;
 import animalia.common.ref.Reference;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.ICraftingHandler;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.IPickupNotifier;
@@ -114,7 +115,7 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
 	private void generateSurface(World world, Random random, int blockX, int blockZ) 
 	{
 		//Full Documentation for this Helper methods found below.
-		this.addOreSpawn(Animalia.fossilBlock, world, random, blockX, blockZ, 16, 16, 40, 10, 20);
+		this.addOreSpawn(Animalia.fossilBlock, world, random, blockX, blockZ, 16, 16, 40, 10, 0, 20, 0);
 		this.addOreSpawn(Animalia.fossilBlock, world, random, blockX, blockZ, 16, 16, 40, 10, 20, 40, 1);
 		this.addOreSpawn(Animalia.fossilBlock, world, random, blockX, blockZ, 16, 16, 40, 10, 40, 60, 2);
 		
@@ -168,7 +169,7 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
 		assert minY > 0: "addOreSpawn: The Minimum Y must be greater than 0";
 		assert maxY < 256 && maxY > 0: "addOreSpawn: The Maximum Y must be less than 256 but greater than 0";
 		assert maxZ > 0 && maxZ <= 16: "addOreSpawn: The Maximum Z must be greater than 0 and less than 16";
-		assert metadata > 0 && metadata <= 16: "addOreSpawn: The metadata value used is invalid! Value: " + metadata;
+		//assert metadata > 0 && metadata <= 16: "addOreSpawn: The metadata value used is invalid! Value: " + metadata; (194, 34, 338)
 		
 		int diffBtwnMinMaxY = maxY - minY;
 		for(int x = 0; x < chancesToSpawn; x++)
@@ -176,7 +177,13 @@ public class EventManager implements ICraftingHandler, IFuelHandler, IWorldGener
 			int posX = blockXPos + random.nextInt(maxX);
 			int posY = minY + random.nextInt(diffBtwnMinMaxY);
 			int posZ = blockZPos + random.nextInt(maxZ);
-			(new WorldGenMinable(block.blockID, maxVeinSize, Block.stone.blockID, metadata)).generate(world, random, posX, posY, posZ);
+			
+			if(Reference.DEBUG_MODE)
+			{
+			    FMLLog.info("Fossil Blocks Spawned Here: (" + posX + ", " + posY + ", " + posZ + ")");
+			}
+			
+			(new WorldGenMinable(block.blockID, metadata, maxVeinSize, Block.stone.blockID)).generate(world, random, posX, posY, posZ);
 		}
 	}
 }
