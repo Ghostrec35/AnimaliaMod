@@ -7,9 +7,11 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
@@ -27,14 +29,13 @@ public class BlockExtractor extends BlockContainer
 
 	private static boolean keepInventory = false;
 
-        public static int modelID = 0; 
-
 	public BlockExtractor(int blockID, boolean b)
 	{
 		super(blockID, Material.rock);
 		this.isActive = b;
 	}
 	
+	@Override
     public boolean renderAsNormalBlock()
     {
         return false;
@@ -71,6 +72,7 @@ public class BlockExtractor extends BlockContainer
 		return new TileEntityExtractor();
 	}
 
+	@Override
 	public void onBlockAdded(World world, int x, int y, int z)
 	{
 		super.onBlockAdded(world, x, y, z);
@@ -113,43 +115,42 @@ public class BlockExtractor extends BlockContainer
 
 	// Make sure you Annotate this as Client Side Only
 	@SideOnly(Side.CLIENT)
-	public Icon getBlockTextureFromSideAndMetadata(int par1, int par2)
-	{
-		return blockIcon;
-	}
-
-	// Make sure you Annotate this as Client Side Only
-	@SideOnly(Side.CLIENT)
+	@Override
 	public void registerIcons(IconRegister iconRegister)
 	{
-                //this will only be used for particle generation
+        //this will only be used for particle generation
 		this.blockIcon = iconRegister.registerIcon("animalia:machines/extractor_particles");
 	}
         
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9)
-	{
-		TileEntity te = world.getBlockTileEntity(x, y, z);
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
+		if (world.isRemote)
+        {
+            return true;
+        }
+        else {
+        	TileEntityExtractor tileentityextractor = (TileEntityExtractor)world.getBlockTileEntity(x, y, z);
 
-		if (te == null /*|| !(te instanceof TileEntityExtractor)*/)
-		{
-			return false;
-		}
+            if (tileentityextractor != null) {
+            	player.openGui(Animalia.instance, Constants.EXTRACTOR_GUI_ID, world, x, y, z);
+            }
 
-		player.openGui(Animalia.instance, Constants.EXTRACTOR_GUI_ID, world, x, y, z);
-		return true;
+            return true;
+        }
 	}
 
-	public boolean shouldSideBeRendered(IBlockAccess iblockaccess, int i, int j, int k, int l)
-	{
+	@Override
+	public boolean shouldSideBeRendered(IBlockAccess iblockaccess, int i, int j, int k, int l) {
 		return false;
 	}
 
-	public boolean isOpaqueCube()
-	{
+	@Override
+	public boolean isOpaqueCube() {
 		return false;
 	}
 
-	public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving, ItemStack par6ItemStack)
+	@Override
+	public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLiving, ItemStack par6ItemStack)
 	{
 		int l = MathHelper.floor_double((double) (par5EntityLiving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
@@ -179,21 +180,21 @@ public class BlockExtractor extends BlockContainer
 		}
 	}
 
+	@Override
 	public int idDropped(int par1, Random par2Random, int par3)
 	{
-		return Block.furnaceIdle.blockID;
+		return Animalia.extractorOff.blockID;
 	}
 
+	@Override
 	public int idPicked(World world, int i, int j, int k)
 	{
 		return Animalia.extractorOff.blockID;
 	}
         
-        @SideOnly(Side.CLIENT)
-        @Override
-        public int getRenderType() {
-            return modelID; //To change body of generated methods, choose Tools | Templates.
-        }
-        
-        
+    @SideOnly(Side.CLIENT)
+    @Override
+    public int getRenderType() {
+        return -1; //Renders Nothing
+    }
 }

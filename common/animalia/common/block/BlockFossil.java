@@ -11,18 +11,16 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import animalia.common.Animalia;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockFossil extends Block
 {
-    private String[] fossilNames = 
+    private String[] fossilNames =
         {
             "early_paleo",
             "late_paleo",
@@ -40,50 +38,25 @@ public class BlockFossil extends Block
         setCreativeTab(Animalia.tabBlock);
     }
     
-    public Icon getIcon(int par1, int par2)
-    {
-        return textures[par2];
-    }
-    
-    public int idDropped(int par1, Random par2Random, int par3)
-    {
-        return Animalia.fossilItem.itemID;
-    }
-    
-    public int damageDropped(int par1)
-    {
-        return par1;
-    }
-    
-    public void getSubBlocks(int par1, CreativeTabs par2CreativeTabs, List par3List)
-    {
-        par3List.add(new ItemStack(par1, 1, 0)); // Early Paleozoic Fossil
-        par3List.add(new ItemStack(par1, 1, 1)); // Late Paleozoic Fossil
-        par3List.add(new ItemStack(par1, 1, 2)); // Mesozoic Fossil
-        //par3List.add(new ItemStack(par1, 1, 3)); // fossil 4
-        //par3List.add(new ItemStack(par1, 1, 4)); // fossil 5
-    }
-    
+    @Override
     protected ItemStack createStackedBlock(int par1)
     {
         return new ItemStack(this.blockID, 1, par1);
     }
     
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IconRegister par1IconRegister)
+    @Override
+    public int damageDropped(int par1)
     {
-        for(int i = 0; i < 3; i++)
-        {
-            textures[i] = par1IconRegister.registerIcon("animalia:fossil_" + fossilNames[i]);
-        }
+        return par1;
     }
     
+    @Override
     public void dropBlockAsItemWithChance(World par1World, int par2, int par3, int par4, int par5, float par6, int par7)
     {
         if (!par1World.isRemote)
         {
             ArrayList<ItemStack> items = getBlockDropped(par1World, par2, par3, par4, par5, par7);
-
+            
             for (ItemStack item : items)
             {
                 if (par1World.rand.nextFloat() <= par6)
@@ -94,42 +67,65 @@ public class BlockFossil extends Block
         }
     }
     
+    @Override
+    public Icon getIcon(int par1, int par2)
+    {
+        return textures[par2];
+    }
+    
+    @Override
+    public void getSubBlocks(int par1, CreativeTabs par2CreativeTabs, List par3List)
+    {
+        par3List.add(new ItemStack(par1, 1, 0)); // Early Paleozoic Fossil
+        par3List.add(new ItemStack(par1, 1, 1)); // Late Paleozoic Fossil
+        par3List.add(new ItemStack(par1, 1, 2)); // Mesozoic Fossil
+        //par3List.add(new ItemStack(par1, 1, 3)); // fossil 4
+        //par3List.add(new ItemStack(par1, 1, 4)); // fossil 5
+    }
+    
+    @Override
+    public int idDropped(int par1, Random par2Random, int par3)
+    {
+        return 0;
+    }
+    
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IconRegister par1IconRegister)
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            textures[i] = par1IconRegister.registerIcon("animalia:fossil_" + fossilNames[i]);
+        }
+    }
+    
+    @Override
     public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
     {
         int metadataVal = world.getBlockMetadata(x, y, z);
         world.setBlock(x, y, z, 0);
-        if(world.isRemote)
-            return true;
-
-        if(player.getHeldItem().itemID == Animalia.olivinePickaxe.itemID)
-            player.addChatMessage("Used Olivine Pickaxe");
-
-        if(player.getHeldItem().getItem() instanceof ItemPickaxe && player.getHeldItem().itemID != Animalia.olivinePickaxe.itemID)
-        {
-            if(world.rand.nextInt(10) < 6)
-            {
-                EntityItem item = new EntityItem(world, x, y, z, new ItemStack(Block.cobblestone));
-                item.motionX = world.rand.nextDouble() - 0.5D;
-                item.motionY = world.rand.nextDouble() - 0.5D;
-                item.motionZ = world.rand.nextDouble() - 0.5D;
+        if (!player.capabilities.isCreativeMode && player.getHeldItem() != null && !world.isRemote) {
+            if (player.getHeldItem().itemID == Animalia.olivinePickaxe.itemID) {
+                if (world.rand.nextFloat() < 0.5F) {
+                    EntityItem item = new EntityItem(world, x, y, z, new ItemStack(Block.cobblestone));
+                    item.motionX = world.rand.nextDouble() - 0.5D;
+                    item.motionY = world.rand.nextDouble() - 0.5D;
+                    item.motionZ = world.rand.nextDouble() - 0.5D;
+                    world.spawnEntityInWorld(item);
+                } else {
+                    EntityItem item = new EntityItem(world, x, y, z, new ItemStack(Item.bone));
+                    item.motionX = world.rand.nextDouble() - 0.5D;
+                    item.motionY = world.rand.nextDouble() - 0.5D;
+                    item.motionZ = world.rand.nextDouble() - 0.5D;
+                    world.spawnEntityInWorld(item);
+                }
+            } else if (player.getHeldItem().itemID == Animalia.chiselItem.itemID) {
+                EntityItem item = new EntityItem(world, x, y, z, new ItemStack(Animalia.fossilItem.itemID, 1, metadataVal));
+                item.motionX = 0;
+                item.motionZ = 0;
+                item.motionY += 0.001;
                 world.spawnEntityInWorld(item);
             }
-            else
-            {
-                EntityItem item = new EntityItem(world, x, y, z, new ItemStack(Item.bone));
-                item.motionX = world.rand.nextDouble() - 0.5D;
-                item.motionY = world.rand.nextDouble() - 0.5D;
-                item.motionZ = world.rand.nextDouble() - 0.5D;
-                world.spawnEntityInWorld(item);
-            }
-        }
-        else
-        {
-            EntityItem item = new EntityItem(world, x, y, z, new ItemStack(Animalia.fossilItem.itemID, 1,  metadataVal));
-            item.motionX = 0;
-            item.motionZ = 0;
-            item.motionY += 0.001;
-            world.spawnEntityInWorld(item);
         }
         return true;
     }

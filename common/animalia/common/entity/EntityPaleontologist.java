@@ -10,11 +10,12 @@ import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.INpc;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.ai.EntityAIFollowGolem;
 import net.minecraft.entity.ai.EntityAILookAtTradePlayer;
 import net.minecraft.entity.ai.EntityAIMoveIndoors;
-import net.minecraft.entity.ai.EntityAIMoveTwardsRestriction;
+import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAIOpenDoor;
 import net.minecraft.entity.ai.EntityAIPlay;
 import net.minecraft.entity.ai.EntityAIRestrictOpenDoor;
@@ -60,25 +61,37 @@ public class EntityPaleontologist extends EntityVillager implements INpc, IMerch
     
     public EntityPaleontologist(World par1World)
     {
+        this(par1World, 0);
+    }
+
+    public EntityPaleontologist(World par1World, int par2)
+    {
         super(par1World);
-        this.randomTickDivider = 0;
-        this.texture = "/mob/villager/villager.png";
-        this.moveSpeed = 0.5F;
+        this.setProfession(par2);
         this.setSize(0.6F, 1.8F);
         this.getNavigator().setBreakDoors(true);
         this.getNavigator().setAvoidsWater(true);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIAvoidEntity(this, EntityZombie.class, 8.0F, 0.3F, 0.35F));
+        this.tasks.addTask(1, new EntityAIAvoidEntity(this, EntityZombie.class, 8.0F, 0.6D, 0.6D));
         this.tasks.addTask(1, new EntityAITradePlayer(this));
         this.tasks.addTask(1, new EntityAILookAtTradePlayer(this));
         this.tasks.addTask(2, new EntityAIMoveIndoors(this));
         this.tasks.addTask(3, new EntityAIRestrictOpenDoor(this));
         this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
-        this.tasks.addTask(5, new EntityAIMoveTwardsRestriction(this, 0.3F));
+        this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 0.6D));
+        this.tasks.addTask(6, new EntityAIVillagerMate(this));
+        this.tasks.addTask(7, new EntityAIFollowGolem(this));
+        this.tasks.addTask(8, new EntityAIPlay(this, 0.32D));
         this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
         this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityVillager.class, 5.0F, 0.02F));
-        this.tasks.addTask(9, new EntityAIWander(this, 0.3F));
+        this.tasks.addTask(9, new EntityAIWander(this, 0.6D));
         this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
+    }
+
+    protected void func_110147_ax()
+    {
+        super.func_110147_ax();
+        this.func_110148_a(SharedMonsterAttributes.field_111263_d).func_111128_a(0.5D);
     }
 
     protected void updateAITick()
@@ -140,7 +153,7 @@ public class EntityPaleontologist extends EntityVillager implements INpc, IMerch
             if (!this.worldObj.isRemote)
             {
                 this.setCustomer(par1EntityPlayer);
-                par1EntityPlayer.displayGUIMerchant(this, this.func_94057_bL());
+                par1EntityPlayer.displayGUIMerchant(this, this.getCustomNameTag());
             }
 
             return true;
@@ -186,11 +199,5 @@ public class EntityPaleontologist extends EntityVillager implements INpc, IMerch
     public EntityAgeable createChild(EntityAgeable entityageable)
     {
         return null;
-    }
-
-    @Override
-    public int getMaxHealth()
-    {
-        return 0;
     }
 }

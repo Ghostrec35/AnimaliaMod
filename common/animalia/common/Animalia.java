@@ -51,10 +51,8 @@ import cpw.mods.fml.common.IPickupNotifier;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.IWorldGenerator;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -154,14 +152,14 @@ public class Animalia
 	public static Block extractorOff;
 	public static Block extractorOn;
 
-	@PreInit
+	@EventHandler
 	public void loadPre(FMLPreInitializationEvent event)
 	{
 		ConfigHandler.initConfig(new File(event.getModConfigurationDirectory() + "/Animalia.cfg"));
 		updateThread.start();
 	}
 
-	@Init
+	@EventHandler
 	public void load(FMLInitializationEvent event)
 	{
 		initObjects();
@@ -201,7 +199,7 @@ public class Animalia
 		return buildInt;
 	}
 
-	@PostInit
+	@EventHandler
 	public void loadPost(FMLPostInitializationEvent event)
 	{
 
@@ -216,48 +214,48 @@ public class Animalia
 		
 		fossilBlock = new BlockFossil(ConfigSettings.fossilEPProp.getInt(), Material.rock).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_early_paleo");
 
-		crystal4DOre = new Block4DCrystalOre(ConfigSettings.crystalOreProp.getInt()).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:crystal_ore");
-		crystal4DOreGlowing = new Block4DCrystalOre(ConfigSettings.crystalOreProp.getInt() + 1).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:crystal_ore").setLightValue(1.0F);
+		crystal4DOre = new Block4DCrystalOre(ConfigSettings.crystalOreProp.getInt()).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:crystal_ore").func_111022_d("animalia:crystal_ore");
+		crystal4DOreGlowing = new Block4DCrystalOre(ConfigSettings.crystalOreProp.getInt() + 1).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:crystal_ore").setLightValue(1.0F).func_111022_d("animalia:crystal_ore");
 
 		extractorOff = new BlockExtractor(ConfigSettings.extractorProp.getInt(), false).setHardness(1F).setResistance(100);
 		extractorOn = new BlockExtractor(ConfigSettings.extractorProp.getInt() + 1, true).setHardness(1F).setResistance(100).setLightValue(1.0F);
 		
-		olivineBlock = new Block(ConfigSettings.olivineBlock.getInt() + 1, Material.iron).setHardness(5.0F).setResistance(10.0F).setUnlocalizedName("animalia:olivineBlock").setStepSound(Block.soundMetalFootstep);
+		olivineBlock = new Block(ConfigSettings.olivineBlock.getInt() + 1, Material.iron).setHardness(5.0F).setResistance(10.0F).setUnlocalizedName("animalia:olivineBlock").setStepSound(Block.soundMetalFootstep).func_111022_d("animalia:olivineBlock");
 
-		permafrost = new BlockPermafrost(4054).setHardness(0.4F).setResistance(1.0F).setUnlocalizedName("animalia:permafrost");
+		permafrost = new BlockPermafrost(4054).setHardness(0.4F).setResistance(1.0F).setUnlocalizedName("animalia:permafrost").func_111022_d("animalia:permafrost");
 		
 		// Items
-		crystal4D = new ItemCrystal4D(ConfigSettings.crystalGemProp.getInt()).setUnlocalizedName("animalia:crystal");
-		olivineGem = new Item(5006).setUnlocalizedName("animalia:olivine_gem");
+		crystal4D = new ItemCrystal4D(ConfigSettings.crystalGemProp.getInt()).setUnlocalizedName("animalia:crystal").func_111206_d("animalia:crystal");
+		olivineGem = new Item(5006).setUnlocalizedName("animalia:olivine_gem").func_111206_d("animalia:olivine_gem");
 
-		olivinePickaxe = new ItemPickaxe(5001, ToolEnums.OLIVINE).setUnlocalizedName("animalia:tools/olivine_pickaxe");
-		olivineAxe = new ItemAxe(5002, ToolEnums.OLIVINE).setUnlocalizedName("animalia:tools/olivine_axe");
-		olivineShovel = new ItemSpade(5003, ToolEnums.OLIVINE).setUnlocalizedName("animalia:tools/olivine_spade");
-		olivineHoe = new ItemHoe(5004, ToolEnums.OLIVINE).setUnlocalizedName("animalia:tools/olivine_hoe");
-		olivineSword = new ItemSword(5005, ToolEnums.OLIVINE).setUnlocalizedName("animalia:weapons/olivine_sword");
+		olivinePickaxe = new ItemPickaxe(5001, ToolEnums.OLIVINE).setUnlocalizedName("animalia:olivine_pickaxe").func_111206_d("animalia:tools/olivine_pickaxe");
+		olivineAxe = new ItemAxe(5002, ToolEnums.OLIVINE).setUnlocalizedName("animalia:olivine_axe").func_111206_d("animalia:tools/olivine_axe");
+		olivineShovel = new ItemSpade(5003, ToolEnums.OLIVINE).setUnlocalizedName("animalia:olivine_spade").func_111206_d("animalia:tools/olivine_spade");
+		olivineHoe = new ItemHoe(5004, ToolEnums.OLIVINE).setUnlocalizedName("animalia:olivine_hoe").func_111206_d("animalia:tools/olivine_hoe");
+		olivineSword = new ItemSword(5005, ToolEnums.OLIVINE).setUnlocalizedName("animalia:olivine_sword").func_111206_d("animalia:weapons/olivine_sword");
 
-		olivineHelmet = new ItemOlivineArmor(6000, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 0).setUnlocalizedName("animalia:armors/olivine_helmet");
-		olivineChestplate = new ItemOlivineArmor(6001, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 1).setUnlocalizedName("animalia:armors/olivine_chestplate");
-		olivineLeggings = new ItemOlivineArmor(6002, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 2).setUnlocalizedName("animalia:armors/olivine_leggings");
-		olivineBoots = new ItemOlivineArmor(6003, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 3).setUnlocalizedName("animalia:armors/olivine_boots");
+		olivineHelmet = new ItemOlivineArmor(6000, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 0).setUnlocalizedName("animalia:olivine_helmet");
+		olivineChestplate = new ItemOlivineArmor(6001, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 1).setUnlocalizedName("animalia:olivine_chestplate");
+		olivineLeggings = new ItemOlivineArmor(6002, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 2).setUnlocalizedName("animalia:olivine_leggings");
+		olivineBoots = new ItemOlivineArmor(6003, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 3).setUnlocalizedName("animalia:olivine_boots");
 
-		chiselItem = new ItemChisel(6050, EnumToolMaterial.IRON).setUnlocalizedName("animalia:tools/chisel");
-		fossilItem = new ItemFossil(6051).setUnlocalizedName("animalia:fossil_item");
+		chiselItem = new ItemChisel(6050, EnumToolMaterial.IRON).setUnlocalizedName("animalia:chisel").func_111206_d("animalia:tools/chisel");
+		fossilItem = new ItemFossil(6051).setUnlocalizedName("animalia:fossil_item").func_111206_d("animalia:fossil_item");
 		
-		mammothHair = new ItemMammothHair(6052).setUnlocalizedName("animalia:mammothHair");
-		mammothTrunkFrozen = new ItemMammothTrunk(6053, 4, false).setUnlocalizedName("animalia:mammothTrunkFrozen");
+		mammothHair = new ItemMammothHair(6052).setUnlocalizedName("animalia:mammothHair").func_111206_d("animalia:mammothHair");
+		mammothTrunkFrozen = new ItemMammothTrunk(6053, 4, false).setUnlocalizedName("animalia:mammothTrunkFrozen").func_111206_d("animalia:mammothTrunkFrozen");
 		
-		artificialEgg = new ItemArtificialEgg(6054, Block.dirt).setUnlocalizedName("animalia:artficialEgg");
+		artificialEgg = new ItemArtificialEgg(6054, Block.dirt).setUnlocalizedName("animalia:artficialEgg").func_111206_d("animalia:artificialEgg");
 	}
 
 	private void initCreativeTabs()
 	{
 		tabBlock = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaBlocks").setIcon(fossilBlock.blockID);
-		tabMaterial = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaMaterials");
-		tabTools = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaTools");
-		tabWeapons = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaWeapons");
-		tabArmors = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaArmors");
-		tabDeco = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaDecorations");
+		tabMaterial = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaMaterials").setIcon(crystal4D.itemID);
+		tabTools = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaTools").setIcon(olivineAxe.itemID);
+		tabWeapons = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaWeapons").setIcon(olivineSword.itemID);
+		tabArmors = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaArmors").setIcon(olivineChestplate.itemID);
+		tabDeco = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaDecorations").setIcon(saplingLP.blockID);
 		tabMachine = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaMachines").setIcon(extractorOff.blockID);
 	}
 

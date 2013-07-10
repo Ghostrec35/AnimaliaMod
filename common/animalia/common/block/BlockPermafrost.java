@@ -13,14 +13,16 @@ public class BlockPermafrost extends Block
         super(par1, Material.grass);
     }
     
+    @Override
     public int idDropped(int i, Random rand, int j)
     {
-        int val = rand.nextInt(10);
-        if(val == 0)
+        float val = rand.nextFloat();
+        if (val <= 0.1F) {
             return Animalia.mammothHair.itemID;
-        else if(val == 1 || val == 2)
+        } else if (val <= 0.3F) {
             return Animalia.mammothTrunkFrozen.itemID;
-        else
+        } else {
             return Block.dirt.blockID;
+        }
     }
 }

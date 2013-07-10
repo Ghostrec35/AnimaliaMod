@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import animalia.client.model.ModelExtractor;
 import animalia.common.machine.extractor.TileEntityExtractor;
+import animalia.common.ref.Resources;
 import net.minecraft.client.Minecraft;
 
 public class RenderExtractor extends TileEntitySpecialRenderer {
@@ -32,9 +33,9 @@ public class RenderExtractor extends TileEntitySpecialRenderer {
             rotation = 90.0F;
         }
         if(tileEntity.isRunning()){
-            Minecraft.getMinecraft().renderEngine.bindTexture("/mods/animalia/textures/machines/extractor_on.png");
+        	func_110628_a(Resources.EXTRACTOR_ON);
         }else{
-            Minecraft.getMinecraft().renderEngine.bindTexture("/mods/animalia/textures/machines/extractor_off.png");
+        	func_110628_a(Resources.EXTRACTOR_OFF);
         }
         
         GL11.glPushMatrix();
@@ -49,7 +50,6 @@ public class RenderExtractor extends TileEntitySpecialRenderer {
         model.renderAll(0.0625F);
         
         GL11.glPopMatrix();
-        Minecraft.getMinecraft().renderEngine.resetBoundTexture();
     }
 
     @Override

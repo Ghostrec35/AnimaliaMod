@@ -311,7 +311,7 @@ public class TileEntityExtractor extends TileEntity implements ISidedInventory, 
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int slot, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slot, ItemStack itemstack)
 	{
 		return slot == 2 ? false : (slot == 1 ? isItemFuel(itemstack) : true);
 	}
@@ -349,7 +349,7 @@ public class TileEntityExtractor extends TileEntity implements ISidedInventory, 
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, int j)
 	{
-		return this.isStackValidForSlot(i, itemstack);
+		return this.isItemValidForSlot(i, itemstack);
 	}
 
 	@Override
