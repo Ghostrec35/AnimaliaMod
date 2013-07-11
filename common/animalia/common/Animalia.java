@@ -224,6 +224,8 @@ public class Animalia
 
 		permafrost = new BlockPermafrost(4054).setHardness(0.4F).setResistance(1.0F).setUnlocalizedName("animalia:permafrost").func_111022_d("animalia:permafrost");
 		
+		petrifiedWood = new Block(ConfigSettings.petrifiedWood.getInt() + 1, Material.stone).setHardness(5.0F).setResistance(10.0F).setUnlocalizedName("animalia:petrifiedWood").setStepSound(Block.soundStoneFootstep).func_111022_d("animalia:petrifiedWood");
+		
 		// Items
 		crystal4D = new ItemCrystal4D(ConfigSettings.crystalGemProp.getInt()).setUnlocalizedName("animalia:crystal").func_111206_d("animalia:crystal");
 		olivineGem = new Item(5006).setUnlocalizedName("animalia:olivine_gem").func_111206_d("animalia:olivine_gem");
@@ -318,6 +320,9 @@ public class Animalia
 		
 		//Gem Blocks
 		registerBlock(olivineBlock, "OlivineBlock");
+		
+		//Petrified Wood
+		registerBlock(petrifiedWood, "Petrified Wood");
 
 		registerBlock(extractorOff, "ExtractorOff");
 		registerBlock(extractorOn, "ExtractorOn");
@@ -380,6 +385,7 @@ public class Animalia
 
 		LanguageRegistry.addName(extractorOff, "Extractor");
 		LanguageRegistry.addName(olivineBlock, "Block of Olivine");
+		LanguageRegistry.addName(petrifiedWood, "Petrified Wood");
 		
 		LanguageRegistry.addName(permafrost, "Permafrost");
 		
