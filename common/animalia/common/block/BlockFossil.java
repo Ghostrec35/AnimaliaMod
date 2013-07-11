@@ -11,6 +11,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
@@ -105,7 +106,7 @@ public class BlockFossil extends Block
         int metadataVal = world.getBlockMetadata(x, y, z);
         world.setBlock(x, y, z, 0);
         if (!player.capabilities.isCreativeMode && player.getHeldItem() != null && !world.isRemote) {
-            if (player.getHeldItem().itemID == Animalia.olivinePickaxe.itemID) {
+            if (player.getHeldItem().getItem() instanceof ItemPickaxe) {
                 if (world.rand.nextFloat() < 0.5F) {
                     EntityItem item = new EntityItem(world, x, y, z, new ItemStack(Block.cobblestone));
                     item.motionX = world.rand.nextDouble() - 0.5D;
