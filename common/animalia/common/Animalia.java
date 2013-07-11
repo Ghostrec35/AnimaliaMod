@@ -19,6 +19,7 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemFood;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import animalia.client.ClientTickHandler;
@@ -127,6 +128,7 @@ public class Animalia
 	// Mammoth Items
 	public static Item mammothHair;
 	public static Item mammothTrunkFrozen;
+	public static Item mammothTrunkThawed;
 	
 	/*
 	 * Olivine Tools
@@ -246,6 +248,7 @@ public class Animalia
 		
 		mammothHair = new ItemMammothHair(6052).setUnlocalizedName("animalia:mammothHair").func_111206_d("animalia:mammothHair");
 		mammothTrunkFrozen = new ItemMammothTrunk(6053, 4, false).setUnlocalizedName("animalia:mammothTrunkFrozen").func_111206_d("animalia:mammothTrunkFrozen");
+		mammothTrunkThawed = (new ItemFood(109, 2, 0.3F, true)).setPotionEffect(Potion.hunger.id, 30, 0, 0.3F).setUnlocalizedName("animalia:mammothTrunkThawed").func_111206_d("animalia:mammothTrunkThawed");
 		
 		artificialEgg = new ItemArtificialEgg(6054, Block.dirt).setUnlocalizedName("animalia:artficialEgg").func_111206_d("animalia:artificialEgg");
 	}
@@ -299,6 +302,7 @@ public class Animalia
 		
 		mammothHair.setCreativeTab(tabMaterial);
 		mammothTrunkFrozen.setCreativeTab(tabMaterial);
+		mammothTrunkThawed.setCreativeTab(tabMaterial);
 	
 		artificialEgg.setCreativeTab(tabMaterial);
 	}
@@ -365,6 +369,7 @@ public class Animalia
 		
 		registerItem(mammothHair, "itemMammothHair");
 		registerItem(mammothTrunkFrozen, "itemMammothTrunkFrozen");
+		registerItem(mammothTrunkThawed, "itemMammothTrunkThawed");
 		
 		registerItem(artificialEgg, "itemArtificialEgg");
 	}
@@ -416,6 +421,7 @@ public class Animalia
 		
 		LanguageRegistry.addName(mammothHair, "Mammoth Hair");
 		LanguageRegistry.addName(mammothTrunkFrozen, "Frozen Mammoth Trunk");
+		LanguageRegistry.addName(mammothTrunkThawed, "Thawed Mammoth Trunk");
 		
 		LanguageRegistry.addName(artificialEgg, "Artificial Egg");
 
@@ -458,6 +464,8 @@ public class Animalia
 		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 1), new ItemStack(logLP, 1, 3));
 		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 2), new ItemStack(logLP, 1, 6));
 		GameRegistry.addShapelessRecipe(new ItemStack(olivineGem, 9, 0), new ItemStack(olivineBlock));
+		
+		GameRegistry.addSmelting(Item.mammothTrunkFrozen.itemID, new Itemstack(mammothTrunkThawed, 1, 0), 1.0F);
 	}
 
 	private void registerHarvestLevels()
