@@ -464,7 +464,7 @@ public class Animalia
 		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 2), new ItemStack(logLP, 1, 6));
 		GameRegistry.addShapelessRecipe(new ItemStack(olivineGem, 9, 0), new ItemStack(olivineBlock));
 		
-		GameRegistry.addSmelting(mammothTrunkFrozen.itemID, new Itemstack(mammothTrunkCooked), 1.0F);
+		GameRegistry.addSmelting(mammothTrunkFrozen.itemID, new ItemStack(mammothTrunkCooked), 1.0F);
 	}
 
 	private void registerHarvestLevels()
