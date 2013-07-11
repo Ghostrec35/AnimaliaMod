@@ -249,9 +249,9 @@ public class Animalia
 		
 		mammothHair = new ItemMammothHair(6052).setUnlocalizedName("animalia:mammothHair").func_111206_d("animalia:mammothHair");
 		mammothTrunkFrozen = new ItemMammothTrunk(6053, 4, false).setUnlocalizedName("animalia:mammothTrunkFrozen").func_111206_d("animalia:mammothTrunkFrozen");
-		mammothTrunkCooked = (new ItemFood(109, 2, 0.3F, true)).setUnlocalizedName("animalia:mammothTrunkCooked").func_111206_d("animalia:mammothTrunkCooked");
+		mammothTrunkCooked = new ItemFood(6054, 2, 0.3F, true).setUnlocalizedName("animalia:mammothTrunkCooked").func_111206_d("animalia:mammothTrunkCooked");
 		
-		artificialEgg = new ItemArtificialEgg(6054, Block.dirt).setUnlocalizedName("animalia:artficialEgg").func_111206_d("animalia:artificialEgg");
+		artificialEgg = new ItemArtificialEgg(6055, Block.dirt).setUnlocalizedName("animalia:artficialEgg").func_111206_d("animalia:artificialEgg");
 	}
 
 	private void initCreativeTabs()
