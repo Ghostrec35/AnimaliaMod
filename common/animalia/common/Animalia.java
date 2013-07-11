@@ -20,6 +20,7 @@ import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import animalia.client.ClientTickHandler;
@@ -128,7 +129,7 @@ public class Animalia
 	// Mammoth Items
 	public static Item mammothHair;
 	public static Item mammothTrunkFrozen;
-	public static Item mammothTrunkThawed;
+	public static Item mammothTrunkCooked;
 	
 	/*
 	 * Olivine Tools
@@ -226,7 +227,7 @@ public class Animalia
 
 		permafrost = new BlockPermafrost(4054).setHardness(0.4F).setResistance(1.0F).setUnlocalizedName("animalia:permafrost").func_111022_d("animalia:permafrost");
 		
-		petrifiedWood = new Block(ConfigSettings.petrifiedWood.getInt() + 1, Material.stone).setHardness(5.0F).setResistance(10.0F).setUnlocalizedName("animalia:petrifiedWood").setStepSound(Block.soundStoneFootstep).func_111022_d("animalia:petrifiedWood");
+		
 		
 		// Items
 		crystal4D = new ItemCrystal4D(ConfigSettings.crystalGemProp.getInt()).setUnlocalizedName("animalia:crystal").func_111206_d("animalia:crystal");
@@ -248,7 +249,7 @@ public class Animalia
 		
 		mammothHair = new ItemMammothHair(6052).setUnlocalizedName("animalia:mammothHair").func_111206_d("animalia:mammothHair");
 		mammothTrunkFrozen = new ItemMammothTrunk(6053, 4, false).setUnlocalizedName("animalia:mammothTrunkFrozen").func_111206_d("animalia:mammothTrunkFrozen");
-		mammothTrunkThawed = (new ItemFood(109, 2, 0.3F, true)).setPotionEffect(Potion.hunger.id, 30, 0, 0.3F).setUnlocalizedName("animalia:mammothTrunkThawed").func_111206_d("animalia:mammothTrunkThawed");
+		mammothTrunkCooked = (new ItemFood(109, 2, 0.3F, true)).setUnlocalizedName("animalia:mammothTrunkCooked").func_111206_d("animalia:mammothTrunkCooked");
 		
 		artificialEgg = new ItemArtificialEgg(6054, Block.dirt).setUnlocalizedName("animalia:artficialEgg").func_111206_d("animalia:artificialEgg");
 	}
@@ -302,7 +303,7 @@ public class Animalia
 		
 		mammothHair.setCreativeTab(tabMaterial);
 		mammothTrunkFrozen.setCreativeTab(tabMaterial);
-		mammothTrunkThawed.setCreativeTab(tabMaterial);
+		mammothTrunkCooked.setCreativeTab(tabMaterial);
 	
 		artificialEgg.setCreativeTab(tabMaterial);
 	}
@@ -325,8 +326,7 @@ public class Animalia
 		//Gem Blocks
 		registerBlock(olivineBlock, "OlivineBlock");
 		
-		//Petrified Wood
-		registerBlock(petrifiedWood, "Petrified Wood");
+	
 
 		registerBlock(extractorOff, "ExtractorOff");
 		registerBlock(extractorOn, "ExtractorOn");
@@ -369,7 +369,7 @@ public class Animalia
 		
 		registerItem(mammothHair, "itemMammothHair");
 		registerItem(mammothTrunkFrozen, "itemMammothTrunkFrozen");
-		registerItem(mammothTrunkThawed, "itemMammothTrunkThawed");
+		registerItem(mammothTrunkCooked, "itemMammothTrunkCooked");
 		
 		registerItem(artificialEgg, "itemArtificialEgg");
 	}
@@ -390,7 +390,6 @@ public class Animalia
 
 		LanguageRegistry.addName(extractorOff, "Extractor");
 		LanguageRegistry.addName(olivineBlock, "Block of Olivine");
-		LanguageRegistry.addName(petrifiedWood, "Petrified Wood");
 		
 		LanguageRegistry.addName(permafrost, "Permafrost");
 		
@@ -421,7 +420,7 @@ public class Animalia
 		
 		LanguageRegistry.addName(mammothHair, "Mammoth Hair");
 		LanguageRegistry.addName(mammothTrunkFrozen, "Frozen Mammoth Trunk");
-		LanguageRegistry.addName(mammothTrunkThawed, "Thawed Mammoth Trunk");
+		LanguageRegistry.addName(mammothTrunkCooked, "Cooked Mammoth Trunk");
 		
 		LanguageRegistry.addName(artificialEgg, "Artificial Egg");
 
@@ -465,7 +464,7 @@ public class Animalia
 		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 2), new ItemStack(logLP, 1, 6));
 		GameRegistry.addShapelessRecipe(new ItemStack(olivineGem, 9, 0), new ItemStack(olivineBlock));
 		
-		GameRegistry.addSmelting(Item.mammothTrunkFrozen.itemID, new Itemstack(mammothTrunkThawed, 1, 0), 1.0F);
+		GameRegistry.addSmelting(mammothTrunkFrozen.itemID, new Itemstack(mammothTrunkCooked), 1.0F);
 	}
 
 	private void registerHarvestLevels()

@@ -70,8 +70,6 @@ public class ConfigHandler
 		ConfigSettings.olivineBlock = config.get(Configuration.CATEGORY_BLOCK, "Olivine Block", 3054);
         ConfigSettings.olivineBlock.comment = "Olivine Block ID";
 		
-		ConfigSettings.petrifiedWood = config.get(Configuration.CATEGORY_BLOCK, "Petrified Wood", 3054);
-        ConfigSettings.petrifiedWood.comment = "Petrified Wood ID";
     }
 
     private static void addItemEntries(Configuration config) 

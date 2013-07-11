@@ -15,7 +15,6 @@ public class ConfigSettings
     public static Property saplingLPProp;
     public static Property planksLPProp;
 	public static Property olivineBlock;
-	public static Property petrifiedWood;
     
     //Item Property
     public static Property crystalGemProp;
