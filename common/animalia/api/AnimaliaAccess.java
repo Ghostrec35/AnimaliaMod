@@ -65,13 +65,13 @@ public class AnimaliaAccess
 		}
 	}
 	
-	public static BlockExtractable newBlockExtractable(int blockID, Material material, ItemStack[] extractableItems)
+	public static BlockExtractable newBlockExtractable(int blockID, Material material, ItemStack extractableItem)
 	{
-		return new BlockExtractable(blockID, material, extractableItems);
+		return new BlockExtractable(blockID, material, extractableItem);
 	}
 	
-	public static ItemExtractable newItemExtractable(int itemID, ItemStack[] items)
+	public static ItemExtractable newItemExtractable(int itemID, ItemStack item)
 	{
-		return new ItemExtractable(itemID, items);
+		return new ItemExtractable(itemID, item);
 	}
 }

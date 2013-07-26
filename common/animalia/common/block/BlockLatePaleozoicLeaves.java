@@ -10,16 +10,10 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
 import net.minecraft.util.Icon;
-import net.minecraft.world.ColorizerFoliage;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import net.minecraftforge.common.IShearable;
@@ -145,9 +139,9 @@ public class BlockLatePaleozoicLeaves extends BlockLeaves implements IShearable
      */
     public void registerIcons(IconRegister par1IconRegister)
     {
-        for(int i = 0; i < 5; i++){
-        	textureFancy[i] = par1IconRegister.registerIcon("Animalia:leaves_"+treeNames[i]);
-        	textureFast[i] = par1IconRegister.registerIcon("Animalia:leaves_"+treeNames[i]+"_opaque");
+        for(int i = 0; i < 3; i++){
+        	textureFancy[i] = par1IconRegister.registerIcon("animalia:leaves_"+treeNames[i]);
+        	textureFast[i] = par1IconRegister.registerIcon("animalia:leaves_"+treeNames[i]+"_opaque");
         }
     }
 

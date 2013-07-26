@@ -6,17 +6,17 @@ import net.minecraft.item.ItemStack;
 
 public class BlockExtractable extends Block implements IExtractable
 {
-	public final ItemStack[] extractableItems;
+	public final ItemStack extractableItem;
 	
-	public BlockExtractable(int blockID, Material material, ItemStack[] extractableItems)
+	public BlockExtractable(int blockID, Material material, ItemStack extractableItem)
 	{
 		super(blockID, material);
-		this.extractableItems = extractableItems;
+		this.extractableItem = extractableItem;
 	}
 
 	@Override
-	public ItemStack[] getExtractionPossiblities(int meta) 
+	public ItemStack onExtract(int meta) 
 	{
-		return extractableItems;
+		return extractableItem;
 	}
 }

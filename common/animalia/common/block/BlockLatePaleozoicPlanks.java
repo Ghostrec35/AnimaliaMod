@@ -65,9 +65,9 @@ public class BlockLatePaleozoicPlanks extends BlockWood
      */
     public void registerIcons(IconRegister par1IconRegister)
     {
-        for (int i = 0; i < this.iconArray.length; ++i)
+        for (int i = 0; i < 3; ++i)
         {
-            this.iconArray[i] = par1IconRegister.registerIcon("Animalia:wood_"+treeNames[i]);
+            this.iconArray[i] = par1IconRegister.registerIcon("animalia:wood_"+treeNames[i]);
         }
     }
 }

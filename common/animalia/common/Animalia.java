@@ -10,50 +10,51 @@ import java.net.URL;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemBlockWithMetadata;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.EnumHelper;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import animalia.client.ClientTickHandler;
 import animalia.common.block.Block4DCrystalOre;
-import animalia.common.block.BlockEarlyPaleozoicFossil;
-import animalia.common.block.BlockLatePaleozoicFossil;
+import animalia.common.block.BlockFossil;
 import animalia.common.block.BlockLatePaleozoicLeaves;
 import animalia.common.block.BlockLatePaleozoicLog;
 import animalia.common.block.BlockLatePaleozoicPlanks;
 import animalia.common.block.BlockLatePaleozoicSapling;
-import animalia.common.block.BlockMesozoicFossil;
+import animalia.common.block.BlockPermafrost;
 import animalia.common.block.ItemBlockMetadata;
 import animalia.common.config.ConfigHandler;
 import animalia.common.config.ConfigSettings;
+import animalia.common.event.EventManager;
+import animalia.common.item.ItemArtificialEgg;
+import animalia.common.item.ItemChisel;
 import animalia.common.item.ItemCrystal4D;
+import animalia.common.item.ItemFossil;
+import animalia.common.item.ItemMammothHair;
+import animalia.common.item.ItemMammothTrunk;
+import animalia.common.item.ItemOlivineArmor;
 import animalia.common.machine.extractor.BlockExtractor;
 import animalia.common.network.PacketHandler;
+import animalia.common.ref.ArmorEnums;
 import animalia.common.ref.Reference;
+import animalia.common.ref.ToolEnums;
 import cpw.mods.fml.common.ICraftingHandler;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.IPickupNotifier;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.IWorldGenerator;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.Metadata;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
-import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -70,7 +71,7 @@ import cpw.mods.fml.relauncher.Side;
 public class Animalia
 {
 	// Retrieve the Constructed Mod Instance from Forge
-	@Instance("AnimaliaMod")
+	@Instance(Reference.MOD_ID)
 	public static Animalia instance;
 	
 	private final Thread updateThread = new Thread(new UpdateThread());
@@ -91,35 +92,45 @@ public class Animalia
 	public static CreativeTabAnimalia tabMachine;
 	public static CreativeTabAnimalia tabDeco;
 
-	/*
-	 * EnumToolMaterial Values
-	 */
-	public static EnumToolMaterial OLIVINE = EnumHelper.addToolMaterial("OLIVINE", 3, 1100, 6F, 3, 16);
-
-	/*
-	 * EnumArmorMaterial Values
-	 */
-	public static EnumArmorMaterial OLIVINEARMOR = EnumHelper.addArmorMaterial("OLIVINE", 25, new int[] { 4, 5, 8, 6 }, 20);
-
 	// EP is an Abbreviation for Early Paleozoic
-	public static Block fossilEP;
+	public static Block fossilBlock;
+	
+	//Ore Blocks
+	public static Block olivineBlock;
 
 	// LP is an Abbreviation for Late Paleozoic
-	public static Block fossilLP;
 	public static Block leavesLP;
 	public static Block logLP;
 	public static Block saplingLP;
 	public static Block planksLP;
 
-	public static Block fossilMesozoic;
-
 	// Crystal Ore
 	public static Block crystal4DOre;
 	public static Block crystal4DOreGlowing;
+	
+	// Permafrost
+	public static Block permafrost;
 
 	// Item Crystal
 	public static Item crystal4D;
 
+	// Item Chisel
+	public static Item chiselItem;
+	
+	// Item Fossil
+	public static Item fossilItem;
+	
+	// Item Syringes
+	public static Item syringeItem;
+	
+	// Item Artificial Egg
+	public static Item artificialEgg;
+	
+	// Mammoth Items
+	public static Item mammothHair;
+	public static Item mammothTrunkFrozen;
+	public static Item mammothTrunkCooked;
+	
 	/*
 	 * Olivine Tools
 	 */
@@ -144,30 +155,30 @@ public class Animalia
 	public static Block extractorOff;
 	public static Block extractorOn;
 
-	@PreInit
+	@EventHandler
 	public void loadPre(FMLPreInitializationEvent event)
 	{
 		ConfigHandler.initConfig(new File(event.getModConfigurationDirectory() + "/Animalia.cfg"));
 		updateThread.start();
 	}
 
-	@Init
+	@EventHandler
 	public void load(FMLInitializationEvent event)
 	{
-		this.initObjects();
-		this.initCreativeTabs();
-		this.finishCreativeTabInit();
-		this.registerBlocks();
-		this.registerItems();
-		this.registerLocalizations();
-		this.registerRecipes();
-		this.registerHarvestLevels();
+		initObjects();
+		initCreativeTabs();
+		finishCreativeTabInit();
+		registerBlocks();
+		registerItems();
+		registerLocalizations();
+		registerRecipes();
+		registerHarvestLevels();
 		Animalia.proxy.registerTileEntities();
 		Animalia.proxy.registerTextureInfo();
 		Animalia.proxy.registerRenders();
 		NetworkRegistry.instance().registerGuiHandler(instance, proxy);
-		this.registerEventManager(new EventManager());
-		this.registerTickHandlers();
+		registerEventManager(new EventManager());
+		registerTickHandlers();
 
 		isCurrentVersion = isNewestRecommendedBuild();
 	}
@@ -191,7 +202,7 @@ public class Animalia
 		return buildInt;
 	}
 
-	@PostInit
+	@EventHandler
 	public void loadPost(FMLPostInitializationEvent event)
 	{
 
@@ -204,56 +215,70 @@ public class Animalia
 		saplingLP = new BlockLatePaleozoicSapling(ConfigSettings.saplingLPProp.getInt()).setHardness(0.0F).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("animalia:sapling_late_paleo");
 		planksLP = new BlockLatePaleozoicPlanks(ConfigSettings.planksLPProp.getInt()).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:planks_late_paleo");
 		
-		fossilEP = new BlockEarlyPaleozoicFossil(ConfigSettings.fossilEPProp.getInt(), Material.rock, "epFossil").setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_early_paleo");
-		fossilLP = new BlockLatePaleozoicFossil(ConfigSettings.fossilLPProp.getInt(), Material.rock, "lpFossil").setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_late_paleo");
-		fossilMesozoic = new BlockMesozoicFossil(ConfigSettings.fossilMesozoicProp.getInt(), Material.rock, "mesFossil").setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_meso");
+		fossilBlock = new BlockFossil(ConfigSettings.fossilEPProp.getInt(), Material.rock).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_early_paleo");
 
-		crystal4DOre = new Block4DCrystalOre(ConfigSettings.crystalOreProp.getInt()).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:crystal_ore");
-		crystal4DOreGlowing = new Block4DCrystalOre(ConfigSettings.crystalOreProp.getInt() + 1).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:crystal_ore").setLightValue(1.0F);
+		crystal4DOre = new Block4DCrystalOre(ConfigSettings.crystalOreProp.getInt()).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:crystal_ore").func_111022_d("animalia:crystal_ore");
+		crystal4DOreGlowing = new Block4DCrystalOre(ConfigSettings.crystalOreProp.getInt() + 1).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:crystal_ore").setLightValue(1.0F).func_111022_d("animalia:crystal_ore");
 
 		extractorOff = new BlockExtractor(ConfigSettings.extractorProp.getInt(), false).setHardness(1F).setResistance(100);
 		extractorOn = new BlockExtractor(ConfigSettings.extractorProp.getInt() + 1, true).setHardness(1F).setResistance(100).setLightValue(1.0F);
+		
+		olivineBlock = new Block(ConfigSettings.olivineBlock.getInt() + 1, Material.iron).setHardness(5.0F).setResistance(10.0F).setUnlocalizedName("animalia:olivineBlock").setStepSound(Block.soundMetalFootstep).func_111022_d("animalia:olivineBlock");
 
+		permafrost = new BlockPermafrost(4054).setHardness(0.4F).setResistance(1.0F).setUnlocalizedName("animalia:permafrost").func_111022_d("animalia:permafrost");
+		
+		
+		
 		// Items
-		crystal4D = new ItemCrystal4D(ConfigSettings.crystalGemProp.getInt()).setUnlocalizedName("animalia:crystal");
-		olivineGem = new Item(5006).setUnlocalizedName("animalia:olivine_gem");
+		crystal4D = new ItemCrystal4D(ConfigSettings.crystalGemProp.getInt()).setUnlocalizedName("animalia:crystal").func_111206_d("animalia:crystal");
+		olivineGem = new Item(5006).setUnlocalizedName("animalia:olivine_gem").func_111206_d("animalia:olivine_gem");
 
-		olivinePickaxe = new ItemPickaxe(5001, OLIVINE).setUnlocalizedName("animalia:tools/olivine_pickaxe");
-		olivineAxe = new ItemAxe(5002, OLIVINE).setUnlocalizedName("animalia:tools/olivine_axe");
-		olivineShovel = new ItemSpade(5003, OLIVINE).setUnlocalizedName("animalia:tools/olivine_spade");
-		olivineHoe = new ItemHoe(5004, OLIVINE).setUnlocalizedName("animalia:tools/olivine_hoe");
-		olivineSword = new ItemSword(5005, OLIVINE).setUnlocalizedName("animalia:weapons/olivine_sword");
+		olivinePickaxe = new ItemPickaxe(5001, ToolEnums.OLIVINE).setUnlocalizedName("animalia:olivine_pickaxe").func_111206_d("animalia:tools/olivine_pickaxe");
+		olivineAxe = new ItemAxe(5002, ToolEnums.OLIVINE).setUnlocalizedName("animalia:olivine_axe").func_111206_d("animalia:tools/olivine_axe");
+		olivineShovel = new ItemSpade(5003, ToolEnums.OLIVINE).setUnlocalizedName("animalia:olivine_spade").func_111206_d("animalia:tools/olivine_spade");
+		olivineHoe = new ItemHoe(5004, ToolEnums.OLIVINE).setUnlocalizedName("animalia:olivine_hoe").func_111206_d("animalia:tools/olivine_hoe");
+		olivineSword = new ItemSword(5005, ToolEnums.OLIVINE).setUnlocalizedName("animalia:olivine_sword").func_111206_d("animalia:weapons/olivine_sword");
 
-		olivineHelmet = new ItemArmor(6000, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 0).setUnlocalizedName("animalia:armors/olivine_helmet");
-		olivineChestplate = new ItemArmor(6001, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 1).setUnlocalizedName("animalia:armors/olivine_chestplate").setCreativeTab(tabArmors);
-		olivineLeggings = new ItemArmor(6002, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 2).setUnlocalizedName("animalia:armors/olivine_leggings").setCreativeTab(tabArmors);
-		olivineBoots = new ItemArmor(6003, OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 3).setUnlocalizedName("animalia:armors/olivine_boots").setCreativeTab(tabArmors);
+		olivineHelmet = new ItemOlivineArmor(6000, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 0).setUnlocalizedName("animalia:olivine_helmet");
+		olivineChestplate = new ItemOlivineArmor(6001, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 1).setUnlocalizedName("animalia:olivine_chestplate");
+		olivineLeggings = new ItemOlivineArmor(6002, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 2).setUnlocalizedName("animalia:olivine_leggings");
+		olivineBoots = new ItemOlivineArmor(6003, ArmorEnums.OLIVINEARMOR, Constants.OLIVINE_ARMOR_RENDER, 3).setUnlocalizedName("animalia:olivine_boots");
 
+		chiselItem = new ItemChisel(6050, EnumToolMaterial.IRON).setUnlocalizedName("animalia:chisel").func_111206_d("animalia:tools/chisel");
+		fossilItem = new ItemFossil(6051).setUnlocalizedName("animalia:fossil_item").func_111206_d("animalia:fossil_item");
+		
+		mammothHair = new ItemMammothHair(6052).setUnlocalizedName("animalia:mammothHair").func_111206_d("animalia:mammothHair");
+		mammothTrunkFrozen = new ItemMammothTrunk(6053, 4, false).setUnlocalizedName("animalia:mammothTrunkFrozen").func_111206_d("animalia:mammothTrunkFrozen");
+		mammothTrunkCooked = new ItemFood(6054, 2, 0.3F, true).setUnlocalizedName("animalia:mammothTrunkCooked").func_111206_d("animalia:mammothTrunkCooked");
+		
+		artificialEgg = new ItemArtificialEgg(6055, Block.dirt).setUnlocalizedName("animalia:artficialEgg").func_111206_d("animalia:artificialEgg");
 	}
 
 	private void initCreativeTabs()
 	{
-		tabBlock = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaBlocks").setIcon(fossilEP.blockID);
-		tabMaterial = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaMaterials");
-		tabTools = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaTools");
-		tabWeapons = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaWeapons");
-		tabArmors = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaArmors");
-		tabDeco = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaDecorations");
+		tabBlock = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaBlocks").setIcon(fossilBlock.blockID);
+		tabMaterial = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaMaterials").setIcon(crystal4D.itemID);
+		tabTools = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaTools").setIcon(olivineAxe.itemID);
+		tabWeapons = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaWeapons").setIcon(olivineSword.itemID);
+		tabArmors = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaArmors").setIcon(olivineChestplate.itemID);
+		tabDeco = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaDecorations").setIcon(saplingLP.blockID);
 		tabMachine = new CreativeTabAnimalia(CreativeTabs.getNextID(), "animaliaMachines").setIcon(extractorOff.blockID);
 	}
 
 	private void finishCreativeTabInit()
 	{
-		fossilEP.setCreativeTab(tabBlock);
-		fossilLP.setCreativeTab(tabBlock);
-		fossilMesozoic.setCreativeTab(tabBlock);
-		
+	    fossilBlock.setCreativeTab(tabBlock);
+	    
 		leavesLP.setCreativeTab(tabBlock);
 		logLP.setCreativeTab(tabBlock);
 		saplingLP.setCreativeTab(tabDeco);
 		planksLP.setCreativeTab(tabBlock);
+		
+		olivineBlock.setCreativeTab(tabBlock);
 
 		crystal4DOre.setCreativeTab(tabBlock);
+		
+		permafrost.setCreativeTab(tabBlock);
 
 		crystal4D.setCreativeTab(tabMaterial);
 		olivineGem.setCreativeTab(tabMaterial);
@@ -272,27 +297,42 @@ public class Animalia
 
 		extractorOff.setCreativeTab(tabMachine);
 		extractorOn.setCreativeTab(null);
+		
+		chiselItem.setCreativeTab(tabTools);
+		fossilItem.setCreativeTab(tabMaterial);
+		
+		mammothHair.setCreativeTab(tabMaterial);
+		mammothTrunkFrozen.setCreativeTab(tabMaterial);
+		mammothTrunkCooked.setCreativeTab(tabMaterial);
+	
+		artificialEgg.setCreativeTab(tabMaterial);
 	}
 
 	private void registerBlocks()
 	{
-		// Fossil Blocks
-		this.registerBlock(fossilEP, "FossilEP");
-		this.registerBlock(fossilLP, "FossilLP");
-		this.registerBlock(fossilMesozoic, "FossilMesozoic");
-		
+		//Fossil Blocks
+	    registerMetadataBlock(fossilBlock, "FossilBlock");
+	    
 		//tree blocks
-		this.registerMetadataBlock(logLP, "LogLP");
-		this.registerMetadataBlock(leavesLP, "LeavesLP");
-		this.registerMetadataBlock(saplingLP, "SaplingLP");
-		this.registerMetadataBlock(planksLP, "PlanksLP");
+		registerMetadataBlock(logLP, "LogLP");
+		registerMetadataBlock(leavesLP, "LeavesLP");
+		registerMetadataBlock(saplingLP, "SaplingLP");
+		registerMetadataBlock(planksLP, "PlanksLP");
 
 		// Crystal Ore Blocks
-		this.registerBlock(crystal4DOre, "CrystalOre");
-		this.registerBlock(crystal4DOreGlowing, "CrystalOreGlowing");
+		registerBlock(crystal4DOre, "CrystalOre");
+		registerBlock(crystal4DOreGlowing, "CrystalOreGlowing");
+		
+		//Gem Blocks
+		registerBlock(olivineBlock, "OlivineBlock");
+		
+	
 
-		this.registerBlock(extractorOff, "ExtractorOff");
-		this.registerBlock(extractorOn, "ExtractorOn");
+		registerBlock(extractorOff, "ExtractorOff");
+		registerBlock(extractorOn, "ExtractorOn");
+		
+		//Permafrost
+		registerBlock(permafrost, "PermafrostBlock");
 	}
 
 	private static void registerBlock(Block block, String name)
@@ -308,38 +348,50 @@ public class Animalia
 	private void registerItems()
 	{
 		// Gems
-		this.registerItem(crystal4D, "itemCrystal4D");
-		this.registerItem(olivineGem, "itemOlivineGem");
+		registerItem(crystal4D, "itemCrystal4D");
+		registerItem(olivineGem, "itemOlivineGem");
 
 		// Olivine Tools
-		this.registerItem(olivineAxe, "itemOlivineAxe");
-		this.registerItem(olivineHoe, "itemOlivineHoe");
-		this.registerItem(olivinePickaxe, "itemOlivinePickaxe");
-		this.registerItem(olivineShovel, "itemOlivineShovel");
-		this.registerItem(olivineSword, "itemOlivineSword");
+		registerItem(olivineAxe, "itemOlivineAxe");
+		registerItem(olivineHoe, "itemOlivineHoe");
+		registerItem(olivinePickaxe, "itemOlivinePickaxe");
+		registerItem(olivineShovel, "itemOlivineShovel");
+		registerItem(olivineSword, "itemOlivineSword");
 
 		// Olivine Armor
-		this.registerItem(olivineHelmet, "itemOlivineHelmet");
-		this.registerItem(olivineChestplate, "itemOlivineChestplate");
-		this.registerItem(olivineLeggings, "itemOlivineLeggings");
-		this.registerItem(olivineBoots, "itemOlivineBoots");
+		registerItem(olivineHelmet, "itemOlivineHelmet");
+		registerItem(olivineChestplate, "itemOlivineChestplate");
+		registerItem(olivineLeggings, "itemOlivineLeggings");
+		registerItem(olivineBoots, "itemOlivineBoots");
+		
+		registerItem(chiselItem, "itemChisel");
+		registerItem(fossilItem, "itemFossil");
+		
+		registerItem(mammothHair, "itemMammothHair");
+		registerItem(mammothTrunkFrozen, "itemMammothTrunkFrozen");
+		registerItem(mammothTrunkCooked, "itemMammothTrunkCooked");
+		
+		registerItem(artificialEgg, "itemArtificialEgg");
 	}
 
 	private static void registerItem(Item item, String name)
 	{
 		GameRegistry.registerItem(item, name, Reference.MOD_ID);
 	}
-
+	
 	private void registerLocalizations()
 	{
 		// Block Localizations
-		LanguageRegistry.addName(fossilEP, "Early Paleozoic Fossil");
-		LanguageRegistry.addName(fossilLP, "Late Paleozoic Fossil");
-		LanguageRegistry.addName(fossilMesozoic, "Mesozoic Fossil");
+		LanguageRegistry.addName(new ItemStack(fossilBlock, 1, 0), "Early Paleozoic Fossil");
+		LanguageRegistry.addName(new ItemStack(fossilBlock, 1, 1), "Late Paleozoic Fossil");
+		LanguageRegistry.addName(new ItemStack(fossilBlock, 1, 2), "Mesozoic Fossil");
 
 		LanguageRegistry.addName(crystal4DOre, "4D Crystal Ore");
 
 		LanguageRegistry.addName(extractorOff, "Extractor");
+		LanguageRegistry.addName(olivineBlock, "Block of Olivine");
+		
+		LanguageRegistry.addName(permafrost, "Permafrost");
 		
 		LanguageRegistry.addName(new ItemStack(logLP, 1, 0), "Sigillaria Log");
 		LanguageRegistry.addName(new ItemStack(logLP, 1, 3), "Lepidodendron Log");
@@ -358,7 +410,19 @@ public class Animalia
 		LanguageRegistry.addName(new ItemStack(planksLP, 1, 2), "Cordaites Planks");
 
 		// Item Localizations
+        LanguageRegistry.addName(new ItemStack(fossilItem, 1, 0), "Early Paleozoic Fossil");
+        LanguageRegistry.addName(new ItemStack(fossilItem, 1, 1), "Late Paleozoic Fossil");
+        LanguageRegistry.addName(new ItemStack(fossilItem, 1, 2), "Mesozoic Fossil");   
+        
 		LanguageRegistry.addName(crystal4D, "4D Crystal");
+		
+		LanguageRegistry.addName(chiselItem, "Chisel");
+		
+		LanguageRegistry.addName(mammothHair, "Mammoth Hair");
+		LanguageRegistry.addName(mammothTrunkFrozen, "Frozen Mammoth Trunk");
+		LanguageRegistry.addName(mammothTrunkCooked, "Cooked Mammoth Trunk");
+		
+		LanguageRegistry.addName(artificialEgg, "Artificial Egg");
 
 		LanguageRegistry.addName(olivineGem, "Olivine Gem");
 		LanguageRegistry.addName(olivineAxe, "Olivine Axe");
@@ -392,17 +456,20 @@ public class Animalia
 		GameRegistry.addRecipe(new ItemStack(olivinePickaxe), new Object[] { "XXX", " S ", " S ", Character.valueOf('X'), olivineGem, Character.valueOf('S'), Item.stick });
 		GameRegistry.addRecipe(new ItemStack(olivineShovel), new Object[] { "X", "S", "S", Character.valueOf('X'), olivineGem, Character.valueOf('S'), Item.stick });
 		GameRegistry.addRecipe(new ItemStack(olivineSword), new Object[] { "X", "X", "S", Character.valueOf('X'), olivineGem, Character.valueOf('S'), Item.stick });
+		GameRegistry.addRecipe(new ItemStack(olivineBlock), new Object[] { "XXX", "XXX", "XXX", Character.valueOf('X'), olivineGem });
+		GameRegistry.addRecipe(new ItemStack(chiselItem), new Object[] {"X", "S", Character.valueOf('X'), Item.ingotIron, Character.valueOf('S'), Item.stick});
 		
 		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 0), new ItemStack(logLP, 1, 0));
 		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 1), new ItemStack(logLP, 1, 3));
 		GameRegistry.addShapelessRecipe(new ItemStack (planksLP, 4, 2), new ItemStack(logLP, 1, 6));
+		GameRegistry.addShapelessRecipe(new ItemStack(olivineGem, 9, 0), new ItemStack(olivineBlock));
+		
+		GameRegistry.addSmelting(mammothTrunkFrozen.itemID, new ItemStack(mammothTrunkCooked), 1.0F);
 	}
 
 	private void registerHarvestLevels()
 	{
-		MinecraftForge.setBlockHarvestLevel(fossilEP, "pickaxe", 2);
-		MinecraftForge.setBlockHarvestLevel(fossilLP, "pickaxe", 2);
-		MinecraftForge.setBlockHarvestLevel(fossilMesozoic, "pickaxe", 2);
+		MinecraftForge.setBlockHarvestLevel(fossilBlock, "pickaxe", 2);
 
 		MinecraftForge.setBlockHarvestLevel(crystal4DOre, "pickaxe", 3);
 		MinecraftForge.setBlockHarvestLevel(crystal4DOreGlowing, "pickaxe", 3);

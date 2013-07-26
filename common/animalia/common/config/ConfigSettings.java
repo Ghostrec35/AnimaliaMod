@@ -1,6 +1,5 @@
 package animalia.common.config;
 
-import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 public class ConfigSettings
@@ -15,6 +14,7 @@ public class ConfigSettings
     public static Property leavesLPProp;
     public static Property saplingLPProp;
     public static Property planksLPProp;
+	public static Property olivineBlock;
     
     //Item Property
     public static Property crystalGemProp;
