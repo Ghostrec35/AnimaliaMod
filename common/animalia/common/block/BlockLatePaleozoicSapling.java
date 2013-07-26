@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
 
-public class BlockLatePaleozoicSapling extends Block implements IPlantable{
+public class BlockLatePaleozoicSapling extends BlockFlower{
 
 	
 	private String[] treeNames = 
