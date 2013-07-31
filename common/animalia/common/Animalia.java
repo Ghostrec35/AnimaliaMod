@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockStairs;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumToolMaterial;
@@ -25,17 +26,22 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import animalia.client.ClientTickHandler;
 import animalia.common.block.Block4DCrystalOre;
+import animalia.common.block.BlockCalamites;
+import animalia.common.block.BlockCalamitesPlant;
 import animalia.common.block.BlockFossil;
 import animalia.common.block.BlockLatePaleozoicLeaves;
 import animalia.common.block.BlockLatePaleozoicLog;
 import animalia.common.block.BlockLatePaleozoicPlanks;
 import animalia.common.block.BlockLatePaleozoicSapling;
 import animalia.common.block.BlockPermafrost;
+import animalia.common.block.BlockStairsPublic;
+import animalia.common.block.BlockWoodSlabLP;
 import animalia.common.block.ItemBlockMetadata;
 import animalia.common.config.ConfigHandler;
 import animalia.common.config.ConfigSettings;
 import animalia.common.event.EventManager;
 import animalia.common.item.ItemArtificialEgg;
+import animalia.common.item.ItemCalamites;
 import animalia.common.item.ItemChisel;
 import animalia.common.item.ItemCrystal4D;
 import animalia.common.item.ItemFossil;
@@ -98,11 +104,18 @@ public class Animalia
 	//Ore Blocks
 	public static Block olivineBlock;
 
-	// LP is an Abbreviation for Late Paleozoic
+	// Late Paleozoic plant blocks
 	public static Block leavesLP;
 	public static Block logLP;
 	public static Block saplingLP;
 	public static Block planksLP;
+	public static Block plantCalamites;
+	public static Block blockCalamites;
+	public static Block stairsSigillaria;
+	public static Block stairsLepido;
+	public static Block stairsCordaites;
+	public static Block woodSlabLP;
+	public static Block woodSlabLPDouble;
 
 	// Crystal Ore
 	public static Block crystal4DOre;
@@ -125,6 +138,9 @@ public class Animalia
 	
 	// Item Artificial Egg
 	public static Item artificialEgg;
+	
+	// Item Calamites (like sugar cane)
+	public static Item itemCalamites;
 	
 	// Mammoth Items
 	public static Item mammothHair;
@@ -214,6 +230,13 @@ public class Animalia
 		logLP = new BlockLatePaleozoicLog(ConfigSettings.logsLPProp.getInt()).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:logs_late_paleo");
 		saplingLP = new BlockLatePaleozoicSapling(ConfigSettings.saplingLPProp.getInt()).setHardness(0.0F).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("animalia:sapling_late_paleo");
 		planksLP = new BlockLatePaleozoicPlanks(ConfigSettings.planksLPProp.getInt()).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:planks_late_paleo");
+		blockCalamites = new BlockCalamites(ConfigSettings.blockCalamitesProp.getInt()).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:calamites_block");
+		plantCalamites = new BlockCalamitesPlant(ConfigSettings.plantCalamitesProp.getInt()).setHardness(0.0F).setStepSound(Block.soundGrassFootstep).setUnlocalizedName("animalia:calamites_plant");
+		stairsSigillaria = new BlockStairsPublic(ConfigSettings.stairsSigProp.getInt(), planksLP, 0).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:stairs_sigillaria");
+		stairsLepido = new BlockStairsPublic(ConfigSettings.stairsLepidoProp.getInt(), planksLP, 1).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:stairs_lepidodendron");
+		stairsCordaites = new BlockStairsPublic(ConfigSettings.stairsCordProp.getInt(), planksLP, 2).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:stairs_cordaites");
+		woodSlabLP = new BlockWoodSlabLP(ConfigSettings.slabLPProp.getInt(), false, planksLP).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:woodslab_late_paleo");
+		woodSlabLPDouble = new BlockWoodSlabLP(ConfigSettings.slabLPDoubleProp.getInt(), true, planksLP).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setUnlocalizedName("animalia:double_woodslab_late_paleo");
 		
 		fossilBlock = new BlockFossil(ConfigSettings.fossilEPProp.getInt(), Material.rock).setHardness(1F).setResistance(100).setUnlocalizedName("animalia:fossil_early_paleo");
 
@@ -252,6 +275,8 @@ public class Animalia
 		mammothTrunkCooked = new ItemFood(6054, 2, 0.3F, true).setUnlocalizedName("animalia:mammothTrunkCooked").func_111206_d("animalia:mammothTrunkCooked");
 		
 		artificialEgg = new ItemArtificialEgg(6055, Block.dirt).setUnlocalizedName("animalia:artficialEgg").func_111206_d("animalia:artificialEgg");
+		
+		itemCalamites = new ItemCalamites(6056).setUnlocalizedName("animalia:calamitesItem").func_111206_d("animalia:calamitesItem");
 	}
 
 	private void initCreativeTabs()
@@ -273,6 +298,12 @@ public class Animalia
 		logLP.setCreativeTab(tabBlock);
 		saplingLP.setCreativeTab(tabDeco);
 		planksLP.setCreativeTab(tabBlock);
+		stairsSigillaria.setCreativeTab(tabBlock);
+		stairsLepido.setCreativeTab(tabBlock);
+		stairsCordaites.setCreativeTab(tabBlock);
+		woodSlabLP.setCreativeTab(tabBlock);
+		
+		blockCalamites.setCreativeTab(tabBlock);
 		
 		olivineBlock.setCreativeTab(tabBlock);
 
@@ -306,6 +337,8 @@ public class Animalia
 		mammothTrunkCooked.setCreativeTab(tabMaterial);
 	
 		artificialEgg.setCreativeTab(tabMaterial);
+		
+		itemCalamites.setCreativeTab(tabMaterial);
 	}
 
 	private void registerBlocks()
@@ -318,6 +351,13 @@ public class Animalia
 		registerMetadataBlock(leavesLP, "LeavesLP");
 		registerMetadataBlock(saplingLP, "SaplingLP");
 		registerMetadataBlock(planksLP, "PlanksLP");
+		registerBlock(stairsSigillaria, "StairsSigillaria");
+		registerBlock(stairsLepido, "StairsLepido");
+		registerBlock(stairsCordaites, "StairsCordaites");
+		registerMetadataBlock(woodSlabLP, "WoodSlabLP");
+		registerMetadataBlock(woodSlabLPDouble, "DoubleWoodSlabLP");
+		registerBlock(plantCalamites, "Calamites Plant");
+		registerBlock(blockCalamites, "Calamites Block");
 
 		// Crystal Ore Blocks
 		registerBlock(crystal4DOre, "CrystalOre");
@@ -327,7 +367,7 @@ public class Animalia
 		registerBlock(olivineBlock, "OlivineBlock");
 		
 	
-
+		//Extractor
 		registerBlock(extractorOff, "ExtractorOff");
 		registerBlock(extractorOn, "ExtractorOn");
 		
@@ -372,6 +412,8 @@ public class Animalia
 		registerItem(mammothTrunkCooked, "itemMammothTrunkCooked");
 		
 		registerItem(artificialEgg, "itemArtificialEgg");
+		
+		registerItem(itemCalamites, "Calamites");
 	}
 
 	private static void registerItem(Item item, String name)
@@ -405,9 +447,20 @@ public class Animalia
 		LanguageRegistry.addName(new ItemStack(saplingLP, 1, 3), "Lepidodendron Sapling");
 		LanguageRegistry.addName(new ItemStack(saplingLP, 1, 6), "Cordaites Sapling");
 		
-		LanguageRegistry.addName(new ItemStack(planksLP, 1, 0), "Sigillaria Planks");
-		LanguageRegistry.addName(new ItemStack(planksLP, 1, 1), "Lepidodendron Planks");
-		LanguageRegistry.addName(new ItemStack(planksLP, 1, 2), "Cordaites Planks");
+		LanguageRegistry.addName(new ItemStack(planksLP, 1, 0), "Sigillaria Wood");
+		LanguageRegistry.addName(new ItemStack(planksLP, 1, 1), "Lepidodendron Wood");
+		LanguageRegistry.addName(new ItemStack(planksLP, 1, 2), "Cordaites Wood");
+		
+		LanguageRegistry.addName(stairsSigillaria, "Sigillaria Stairs");
+		LanguageRegistry.addName(stairsLepido, "Lepidodendron Stairs");
+		LanguageRegistry.addName(stairsCordaites, "Cordaites Stairs");
+		
+		LanguageRegistry.addName(new ItemStack(woodSlabLP, 1, 0), "Sigillaria Wood Slab");
+		LanguageRegistry.addName(new ItemStack(woodSlabLP, 1, 1), "Lepidodendron Wood Slab");
+		LanguageRegistry.addName(new ItemStack(woodSlabLP, 1, 2), "Cordaites Wood Slab");
+		
+		LanguageRegistry.addName(plantCalamites, "Calamites Plant");
+		LanguageRegistry.addName(blockCalamites, "Calamites Block");
 
 		// Item Localizations
         LanguageRegistry.addName(new ItemStack(fossilItem, 1, 0), "Early Paleozoic Fossil");
@@ -435,6 +488,8 @@ public class Animalia
 		LanguageRegistry.addName(olivineChestplate, "Olivine Chestplate");
 		LanguageRegistry.addName(olivineLeggings, "Olivine Leggings");
 		LanguageRegistry.addName(olivineBoots, "Olivine Boots");
+		
+		LanguageRegistry.addName(itemCalamites, "Calamites");
 
 		// General Localizations
 		LanguageRegistry.instance().addStringLocalization("itemGroup.animaliaBlocks", Language.ENGLISHUS.getLangCode(), "Animalia Blocks");

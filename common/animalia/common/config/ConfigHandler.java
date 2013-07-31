@@ -66,6 +66,27 @@ public class ConfigHandler
         
         ConfigSettings.planksLPProp = config.get(Configuration.CATEGORY_BLOCK, "Late Paleozoic Planks", 3053);
         ConfigSettings.planksLPProp.comment = "Late Paleozoic Planks Block ID";
+        
+        ConfigSettings.plantCalamitesProp = config.get(Configuration.CATEGORY_BLOCK, "Calamites Plant", 3062);
+        ConfigSettings.plantCalamitesProp.comment = "Calamites Plant Block ID";
+        
+        ConfigSettings.blockCalamitesProp = config.get(Configuration.CATEGORY_BLOCK, "Calamites Block", 3056);
+        ConfigSettings.blockCalamitesProp.comment = "Calamites Block ID";
+        
+        ConfigSettings.stairsSigProp = config.get(Configuration.CATEGORY_BLOCK, "Sigillaria Stairs", 3057);
+        ConfigSettings.stairsSigProp.comment = "Sigillaria Stairs Block ID";
+        
+        ConfigSettings.stairsLepidoProp = config.get(Configuration.CATEGORY_BLOCK, "Lepidodendron Stairs", 3058);
+        ConfigSettings.stairsLepidoProp.comment = "Lepidodendron Stairs Block ID";
+        
+        ConfigSettings.stairsCordProp = config.get(Configuration.CATEGORY_BLOCK, "Cordaites Stairs", 3059);
+        ConfigSettings.stairsCordProp.comment = "Cordaites Stairs Block ID";
+        
+        ConfigSettings.slabLPProp = config.get(Configuration.CATEGORY_BLOCK, "Late Paleozoic Wood Slab", 3060);
+        ConfigSettings.slabLPProp.comment = "Late Paleozoic Wood Slab Block ID";
+        
+        ConfigSettings.slabLPDoubleProp = config.get(Configuration.CATEGORY_BLOCK, "Late Paleozoic Wood Double Slab", 3061);
+        ConfigSettings.slabLPDoubleProp.comment = "Late Paleozoic Wood Double Slab Block ID";
 		
 		ConfigSettings.olivineBlock = config.get(Configuration.CATEGORY_BLOCK, "Olivine Block", 3054);
         ConfigSettings.olivineBlock.comment = "Olivine Block ID";
@@ -82,6 +103,9 @@ public class ConfigHandler
         
         ConfigSettings.olivineGemProp = config.get(CATEGORY_GEM, "Olivine Gem", 6502);
         ConfigSettings.olivineGemProp.comment = "Olivine Gem Item ID";
+        
+        ConfigSettings.olivineGemProp = config.get(CATEGORY_GEM, "Calamites Item", 6503);
+        ConfigSettings.olivineGemProp.comment = "Calamites Item ID";
     }
 
     private static void addSettingsEntries(Configuration config) 

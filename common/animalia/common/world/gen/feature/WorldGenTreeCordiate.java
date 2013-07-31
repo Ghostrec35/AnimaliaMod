@@ -64,7 +64,7 @@ public class WorldGenTreeCordiate extends WorldGenerator
     	int treeHeight = minHeight + random.nextInt(maxHeight);
     	
     	//Generate trunk
-		for(int i = 0; i < treeHeight; i++){
+		for(int i = 2; i < treeHeight; i++){
     		setBlockInWorld(locX, locY + i, locZ, this.woodID, this.woodMeta);
     	}
 		
